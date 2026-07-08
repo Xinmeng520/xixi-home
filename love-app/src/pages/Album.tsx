@@ -13,7 +13,7 @@ export default function Album() {
   const fetchPhotos = useCallback(async () => {
     setLoading(true); setError("");
     try { const data = await request<{ items: Photo[] }>("/api/photos?page=1&limit=50"); setPhotos(data.items); }
-    catch (err: any) { setError(err.message || "\u52a0\u8f7d\u5931\u8d25"); }
+    catch (err: any) { setError(err.message || "加载失败"); }
     finally { setLoading(false); }
   }, []);
 
@@ -28,13 +28,13 @@ export default function Album() {
       for (let i = 0; i < files.length; i++) formData.append("images", files[i]);
       await request("/api/photos", { method: "POST", body: formData });
       fetchPhotos();
-    } catch (err: any) { setError(err.message || "\u4e0a\u4f20\u5931\u8d25"); }
+    } catch (err: any) { setError(err.message || "上传失败"); }
     finally { setUploading(false); if (fileRef.current) fileRef.current.value = ""; }
   };
 
   const handleDelete = async (id: number) => {
     try { await request("/api/photos/" + id, { method: "DELETE" }); setPhotos((prev) => prev.filter((p) => p.id !== id)); }
-    catch (err: any) { setError(err.message || "\u5220\u9664\u5931\u8d25"); }
+    catch (err: any) { setError(err.message || "删除失败"); }
   };
 
   const preview = previewIdx !== null ? photos[previewIdx] : null;
@@ -42,17 +42,17 @@ export default function Album() {
   return (
     <div className="px-4 pt-4 pb-6">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold text-warm-700">\u76f8\u518c</h1>
+        <h1 className="text-lg font-semibold text-warm-700">相册</h1>
         <button onClick={() => fileRef.current?.click()} disabled={uploading}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-warm-500 text-white text-xs font-medium shadow-md shadow-warm-200 active:scale-95 transition-transform disabled:opacity-50">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          {uploading ? "\u4e0a\u4f20\u4e2d..." : "\u4e0a\u4f20"}
+          {uploading ? "上传中..." : "上传"}
         </button>
         <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={(e) => handleUpload(e)} />
       </div>
       {error && <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-xs text-red-500 mb-3">{error}</div>}
       {loading ? (<div className="grid grid-cols-3 gap-1.5">{Array.from({ length: 9 }).map((_: unknown, i: number) => (<div key={i} className="aspect-square rounded-xl bg-warm-100 animate-pulse"/>))}</div>)
-      : photos.length === 0 ? (<div className="bg-white rounded-2xl p-8 shadow-sm text-center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fdba74" strokeWidth="1.5" className="mx-auto mb-3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p className="text-sm text-gray-400">\u8fd8\u6ca1\u6709\u7167\u7247</p><p className="text-xs text-gray-300 mt-1">\u70b9\u51fb\u4e0a\u4f20\u6dfb\u52a0\u7167\u7247</p></div>)
+      : photos.length === 0 ? (<div className="bg-white rounded-2xl p-8 shadow-sm text-center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fdba74" strokeWidth="1.5" className="mx-auto mb-3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p className="text-sm text-gray-400">还没有照片</p><p className="text-xs text-gray-300 mt-1">点击上传添加照片</p></div>)
       : (<div className="grid grid-cols-3 gap-1.5">{photos.map((photo: Photo, idx: number) => (
         <div key={photo.id} className="aspect-square rounded-xl overflow-hidden bg-warm-100 cursor-pointer active:opacity-80 transition-opacity relative group" onClick={() => setPreviewIdx(idx)}>
           <img src={"http://localhost:3000" + photo.image_url} alt={photo.caption || ""} className="w-full h-full object-cover"/>

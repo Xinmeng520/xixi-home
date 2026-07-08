@@ -50,3 +50,9 @@ npm-debug.log*
 .tmp-temp/
 .vite/
 .vite-temp/
+
+# Debug / temp
+debug_page.png
+*.cjs
+src_backup_unicode/
+qa-final-*.png

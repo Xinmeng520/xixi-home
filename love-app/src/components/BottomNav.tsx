@@ -1,11 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
 
 const navItems = [
-  { path: "/", label: "\u9996\u9875", icon: HomeIcon },
-  { path: "/album", label: "\u76f8\u518c", icon: AlbumIcon },
+  { path: "/", label: "首页", icon: HomeIcon },
+  { path: "/album", label: "相册", icon: AlbumIcon },
   { path: "/compose", label: "", icon: AddIcon, isAdd: true },
-  { path: "/anniversary", label: "\u7eaa\u5ff5\u65e5", icon: CalendarIcon },
-  { path: "/profile", label: "\u6211\u7684", icon: UserIcon },
+  { path: "/anniversary", label: "纪念日", icon: CalendarIcon },
+  { path: "/profile", label: "我的", icon: UserIcon },
 ];
 
 export default function BottomNav() {
