@@ -12,7 +12,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchUser = async () => {
       try { const data = await request<User>("/api/auth/me"); setUser(data); }
-      catch (err: any) { setError(err.message || "加载失败"); }
+      catch (err: any) { setError(err.message || "\u52a0\u8f7d\u5931\u8d25"); }
       finally { setLoading(false); }
     };
     fetchUser();
@@ -22,7 +22,7 @@ export default function Profile() {
 
   return (
     <div className="px-4 pt-4 pb-6">
-      <h1 className="text-lg font-semibold text-warm-700 mb-4">我的</h1>
+      <h1 className="text-lg font-semibold text-warm-700 mb-4">\u6211\u7684</h1>
       {error && <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-xs text-red-500 mb-3">{error}</div>}
       {loading ? (<div className="bg-white rounded-2xl p-6 shadow-sm animate-pulse"><div className="flex items-center gap-4"><div className="w-14 h-14 rounded-full bg-warm-100"/><div className="space-y-2 flex-1"><div className="h-4 bg-warm-100 rounded w-20"/><div className="h-3 bg-warm-50 rounded w-28"/></div></div></div>)
       : user ? (
@@ -32,11 +32,11 @@ export default function Profile() {
             <div><p className="text-base font-semibold text-gray-900">{user.nickname}</p><p className="text-xs text-gray-400 mt-0.5">@{user.username}</p></div>
           </div>
           <div className="mt-6 space-y-1">
-            <div className="flex items-center justify-between py-3 border-b border-gray-50"><span className="text-sm text-gray-600">用户ID</span><span className="text-sm text-gray-400">#{user.id}</span></div>
-            <div className="flex items-center justify-between py-3 border-b border-gray-50"><span className="text-sm text-gray-600">用户名</span><span className="text-sm text-gray-400">{user.username}</span></div>
-            <div className="flex items-center justify-between py-3"><span className="text-sm text-gray-600">昵称</span><span className="text-sm text-gray-400">{user.nickname}</span></div>
+            <div className="flex items-center justify-between py-3 border-b border-gray-50"><span className="text-sm text-gray-600">\u7528\u6237ID</span><span className="text-sm text-gray-400">#{user.id}</span></div>
+            <div className="flex items-center justify-between py-3 border-b border-gray-50"><span className="text-sm text-gray-600">\u7528\u6237\u540d</span><span className="text-sm text-gray-400">{user.username}</span></div>
+            <div className="flex items-center justify-between py-3"><span className="text-sm text-gray-600">\u6635\u79f0</span><span className="text-sm text-gray-400">{user.nickname}</span></div>
           </div>
-          <button onClick={handleLogout} className="w-full mt-6 py-3 rounded-xl border border-red-200 text-red-500 text-sm font-medium active:scale-[0.98] transition-transform">退出登录</button>
+          <button onClick={handleLogout} className="w-full mt-6 py-3 rounded-xl border border-red-200 text-red-500 text-sm font-medium active:scale-[0.98] transition-transform">\u9000\u51fa\u767b\u5f55</button>
         </div>
       ) : null}
     </div>

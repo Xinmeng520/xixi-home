@@ -4,14 +4,14 @@ export default function DemoC() {
   const [days] = useState(46);
 
   const posts = [
-    { id: 1, user: '熙熙', avatar: 'X', text: '今天一起去吃了超好吃的火锅！排队一个小时但值得', images: 9, time: '2小时前', comments: 3, likes: 12 },
-    { id: 2, user: '妈妈', avatar: 'M', text: '新买的裙子到了，颜色好正很喜欢', images: 4, time: '昨天', comments: 5, likes: 8 },
+    { id: 1, user: '\u7199\u7199', avatar: 'X', text: '\u4ECA\u5929\u4E00\u8D77\u53BB\u5403\u4E86\u8D85\u597D\u5403\u7684\u706B\u9505\uFF01\u6392\u961F\u4E00\u4E2A\u5C0F\u65F6\u4F46\u503C\u5F97', images: 9, time: '2\u5C0F\u65F6\u524D', comments: 3, likes: 12 },
+    { id: 2, user: '\u5988\u5988', avatar: 'M', text: '\u65B0\u4E70\u7684\u88D9\u5B50\u5230\u4E86\uFF0C\u989C\u8272\u597D\u6B63\u5F88\u559C\u6B22', images: 4, time: '\u6628\u5929', comments: 5, likes: 8 },
   ];
 
   const events = [
-    { name: '在一起100天', date: '09.05', daysLeft: 54, color: 'from-warm-400 to-warm-500' },
-    { name: '她的生日', date: '10.12', daysLeft: 89, color: 'from-pink-300 to-pink-400' },
-    { name: '他的生日', date: '11.28', daysLeft: 136, color: 'from-blue-300 to-blue-400' },
+    { name: '\u5728\u4E00\u8D77100\u5929', date: '09.05', daysLeft: 54, color: 'from-warm-400 to-warm-500' },
+    { name: '\u5979\u7684\u751F\u65E5', date: '10.12', daysLeft: 89, color: 'from-pink-300 to-pink-400' },
+    { name: '\u4ED6\u7684\u751F\u65E5', date: '11.28', daysLeft: 136, color: 'from-blue-300 to-blue-400' },
   ];
 
   return (
@@ -27,35 +27,35 @@ export default function DemoC() {
             <span className="text-white font-bold text-lg">LX</span>
           </div>
           <div>
-            <h2 className="font-semibold text-warm-900 text-base">熙熙 & 妈妈</h2>
-            <p className="text-xs text-warm-500">在一起 {days} 天</p>
+            <h2 className="font-semibold text-warm-900 text-base">\u7199\u7199 & \u5988\u5988</h2>
+            <p className="text-xs text-warm-500">\u5728\u4E00\u8D77 {days} \u5929</p>
           </div>
         </div>
       </div>
 
       <div className="px-5 mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-warm-900">纪念日倒计时</h3>
-          <button className="text-xs text-warm-500">全部</button>
+          <h3 className="text-sm font-semibold text-warm-900">\u7EAA\u5FF5\u65E5\u5012\u8BA1\u65F6</h3>
+          <button className="text-xs text-warm-500">\u5168\u90E8</button>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1">
           {events.map((ev, i) => (
             <div key={i} className={"flex-shrink-0 bg-gradient-to-br " + ev.color + " rounded-xl p-3 w-32 text-white"}>
               <p className="text-white/80 text-[10px]">{ev.date}</p>
               <p className="text-xs font-medium mt-1">{ev.name}</p>
-              <p className="text-lg font-bold mt-1">{ev.daysLeft}<span className="text-[10px] font-normal"> 天</span></p>
+              <p className="text-lg font-bold mt-1">{ev.daysLeft}<span className="text-[10px] font-normal"> \u5929</span></p>
             </div>
           ))}
           <div className="flex-shrink-0 w-20 rounded-xl border-2 border-dashed border-warm-300 flex items-center justify-center">
-            <span className="text-warm-400 text-xs">添加</span>
+            <span className="text-warm-400 text-xs">\u6DFB\u52A0</span>
           </div>
         </div>
       </div>
 
       <div className="px-5">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-warm-900">最新动态</h3>
-          <button className="text-xs text-warm-500">全部</button>
+          <h3 className="text-sm font-semibold text-warm-900">\u6700\u65B0\u52A8\u6001</h3>
+          <button className="text-xs text-warm-500">\u5168\u90E8</button>
         </div>
         <div className="space-y-3">
           {posts.map(post => (
@@ -81,8 +81,8 @@ export default function DemoC() {
                 </div>
               )}
               <div className="flex items-center gap-5 mt-3 pt-2 border-t border-warm-100">
-                <span className="text-warm-400 text-xs">喜欢 {post.likes}</span>
-                <span className="text-warm-400 text-xs">评论 {post.comments}</span>
+                <span className="text-warm-400 text-xs">\u559C\u6B22 {post.likes}</span>
+                <span className="text-warm-400 text-xs">\u8BC4\u8BBA {post.comments}</span>
               </div>
             </div>
           ))}
@@ -91,8 +91,8 @@ export default function DemoC() {
 
       <div className="px-5 mt-5">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-warm-900">相册预览</h3>
-          <button className="text-xs text-warm-500">全部</button>
+          <h3 className="text-sm font-semibold text-warm-900">\u76F8\u518C\u9884\u89C8</h3>
+          <button className="text-xs text-warm-500">\u5168\u90E8</button>
         </div>
         <div className="grid grid-cols-4 gap-1.5">
           {Array.from({ length: 8 }).map((_, i) => (
@@ -104,23 +104,23 @@ export default function DemoC() {
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[390px] bg-white border-t border-warm-100 flex justify-around py-2.5 px-4 z-20">
         <div className="flex flex-col items-center text-warm-500">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          <span className="text-[10px] mt-1">概览</span>
+          <span className="text-[10px] mt-1">\u6982\u89C8</span>
         </div>
         <div className="flex flex-col items-center text-warm-300">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          <span className="text-[10px] mt-1">动态</span>
+          <span className="text-[10px] mt-1">\u52A8\u6001</span>
         </div>
         <div className="flex flex-col items-center text-warm-300">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          <span className="text-[10px] mt-1">相册</span>
+          <span className="text-[10px] mt-1">\u76F8\u518C</span>
         </div>
         <div className="flex flex-col items-center text-warm-300">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span className="text-[10px] mt-1">纪念日</span>
+          <span className="text-[10px] mt-1">\u7EAA\u5FF5\u65E5</span>
         </div>
         <div className="flex flex-col items-center text-warm-300">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span className="text-[10px] mt-1">我的</span>
+          <span className="text-[10px] mt-1">\u6211\u7684</span>
         </div>
       </div>
     </div>
