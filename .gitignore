@@ -1,0 +1,52 @@
+﻿# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Test / Temp scripts
+*.ps1
+full_test.ps1
+full_test2.ps1
+run_test.ps1
+console_test.cjs
+detail_test.cjs
+screenshot.cjs
+test_local.cjs
+
+# Backend uploads (user content)
+xixi-home-backend/uploads/
+
+# Demo images / screenshots
+demo_*.png
+header*full_demo.png
+header_e.png
+header_f.png
+header_g.png
+test-result.png
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp
+.tmp/
+.tmp-temp/
+.vite/
+.vite-temp/
