@@ -4,7 +4,8 @@ import { PostRow, PostImageRow, CommentRow, PostDetail, PostListItem } from '../
 export async function getList(page: number, pageSize: number) {
   const offset = (page - 1) * pageSize;
   const [rows] = await pool.query(
-    `SELECT p.*, u.nickname as author_name, u.avatar as author_avatar,
+    `SELECT p.id, p.title, p.content, p.like_count, p.is_pinned, p.created_at,
+            u.id as author_id, u.nickname as author_nickname, u.avatar as author_avatar,
             (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) as comment_count
      FROM posts p
      JOIN users u ON p.author_id = u.id
@@ -12,7 +13,7 @@ export async function getList(page: number, pageSize: number) {
      LIMIT ? OFFSET ?`,
     [pageSize, offset]
   );
-  const items = rows as PostListItem[];
+  const items = rows as any[];
   // Batch load images
   for (const item of items) {
     const [imgs] = await pool.query(
@@ -23,16 +24,32 @@ export async function getList(page: number, pageSize: number) {
   }
   const [countRows] = await pool.query('SELECT COUNT(*) as total FROM posts');
   const total = (countRows as any[])[0].total;
-  return { items, total };
+
+  // Transform to match frontend types
+  const transformedItems = items.map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    content: p.content,
+    is_pinned: p.is_pinned,
+    like_count: p.like_count,
+    comment_count: p.comment_count,
+    created_at: p.created_at,
+    is_liked: false,
+    author: { id: p.author_id, nickname: p.author_nickname, avatar: p.author_avatar },
+    images: p.images || [],
+  }));
+
+  return { items: transformedItems, total };
 }
 
 export async function getDetail(id: number) {
   const [rows] = await pool.query(
-    `SELECT p.*, u.nickname as author_name, u.avatar as author_avatar
+    `SELECT p.id, p.title, p.content, p.like_count, p.is_pinned, p.created_at,
+            u.id as author_id, u.nickname as author_nickname, u.avatar as author_avatar
      FROM posts p JOIN users u ON p.author_id = u.id WHERE p.id = ?`,
     [id]
   );
-  const posts = rows as PostRow[];
+  const posts = rows as any[];
   if (posts.length === 0) return null;
   const post = posts[0];
 
@@ -42,26 +59,39 @@ export async function getDetail(id: number) {
   );
 
   const [comments] = await pool.query(
-    `SELECT c.*, u.nickname as author_name, u.avatar as author_avatar
+    `SELECT c.id, c.content, c.created_at,
+            u.id as author_id, u.nickname as author_nickname, u.avatar as author_avatar
      FROM comments c JOIN users u ON c.author_id = u.id
      WHERE c.post_id = ? ORDER BY c.created_at ASC`,
     [id]
   );
 
   return {
-    ...post,
+    id: post.id,
+    title: post.title,
+    content: post.content,
+    is_pinned: post.is_pinned,
+    like_count: post.like_count,
+    created_at: post.created_at,
+    is_liked: false,
+    author: { id: post.author_id, nickname: post.author_nickname, avatar: post.author_avatar },
     images: images as PostImageRow[],
-    comments: comments as any[],
-  } as PostDetail;
+    comments: (comments as any[]).map((c: any) => ({
+      id: c.id,
+      content: c.content,
+      created_at: c.created_at,
+      author: { id: c.author_id, nickname: c.author_nickname, avatar: c.author_avatar },
+    })),
+  };
 }
 
-export async function createPost(data: { title?: string; content: string; author_id: number; images?: string[] }) {
+export async function createPost(data: { title?: string; content: string; author_id: number; images?: string[]; is_pinned?: number }) {
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
     const [result] = await conn.query(
-      'INSERT INTO posts (title, content, author_id) VALUES (?, ?, ?)',
-      [data.title || null, data.content, data.author_id]
+      'INSERT INTO posts (title, content, author_id, is_pinned) VALUES (?, ?, ?, ?)',
+      [data.title || null, data.content, data.author_id, data.is_pinned || 0]
     );
     const postId = (result as any).insertId;
     if (data.images && data.images.length > 0) {
@@ -82,19 +112,25 @@ export async function createPost(data: { title?: string; content: string; author
   }
 }
 
-export async function updatePost(id: number, authorId: number, data: { title?: string; content: string }) {
+export async function updatePost(id: number, authorId: number, data: { title?: string; content: string; images?: string[]; is_pinned?: number }) {
   const [rows] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [id]);
   const posts = rows as PostRow[];
-  if (posts.length === 0) throw new Error('帖子不存在');
-  if (posts[0].author_id !== authorId) throw new Error('无权编辑他人帖子');
-  await pool.query('UPDATE posts SET title = ?, content = ? WHERE id = ?', [data.title || null, data.content, id]);
+  if (posts.length === 0) throw new Error('\u5e16\u5b50\u4e0d\u5b58\u5728');
+  if (posts[0].author_id !== authorId) throw new Error('\u65e0\u6743\u7f16\u8f91\u4ed6\u4eba\u5e16\u5b50');
+  await pool.query('UPDATE posts SET title = ?, content = ?, is_pinned = ? WHERE id = ?', [data.title || null, data.content, data.is_pinned ?? posts[0].is_pinned, id]);
+  if (data.images && data.images.length > 0) {
+    await pool.query('DELETE FROM post_images WHERE post_id = ?', [id]);
+    for (let i = 0; i < data.images.length; i++) {
+      await pool.query('INSERT INTO post_images (post_id, image_url, sort_order) VALUES (?, ?, ?)', [id, data.images[i], i]);
+    }
+  }
 }
 
 export async function deletePost(id: number, authorId: number) {
   const [rows] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [id]);
   const posts = rows as PostRow[];
-  if (posts.length === 0) throw new Error('帖子不存在');
-  if (posts[0].author_id !== authorId) throw new Error('无权删除他人帖子');
+  if (posts.length === 0) throw new Error('\u5e16\u5b50\u4e0d\u5b58\u5728');
+  if (posts[0].author_id !== authorId) throw new Error('\u65e0\u6743\u5220\u9664\u4ed6\u4eba\u5e16\u5b50');
   await pool.query('DELETE FROM posts WHERE id = ?', [id]);
 }
 
@@ -116,7 +152,7 @@ export async function toggleLike(postId: number, userId: number) {
     let liked: boolean;
     if (likes.length > 0) {
       await conn.query('DELETE FROM likes WHERE post_id = ? AND user_id = ?', [postId, userId]);
-      await conn.query('UPDATE posts SET like_count = like_count - 1 WHERE id = ?', [postId]);
+      await conn.query('UPDATE posts SET like_count = GREATEST(like_count - 1, 0) WHERE id = ?', [postId]);
       liked = false;
     } else {
       await conn.query('INSERT INTO likes (post_id, user_id) VALUES (?, ?)', [postId, userId]);
@@ -136,15 +172,23 @@ export async function toggleLike(postId: number, userId: number) {
 
 export async function getComments(postId: number) {
   const [rows] = await pool.query(
-    `SELECT c.*, u.nickname as author_name, u.avatar as author_avatar
+    `SELECT c.id, c.content, c.created_at,
+            u.id as author_id, u.nickname as author_nickname, u.avatar as author_avatar
      FROM comments c JOIN users u ON c.author_id = u.id
      WHERE c.post_id = ? ORDER BY c.created_at ASC`,
     [postId]
   );
-  return rows as any[];
+  return (rows as any[]).map((c: any) => ({
+    id: c.id,
+    content: c.content,
+    created_at: c.created_at,
+    author: { id: c.author_id, nickname: c.author_nickname, avatar: c.author_avatar },
+  }));
 }
 
 export async function addComment(postId: number, authorId: number, content: string) {
+  const [posts] = await pool.query('SELECT id FROM posts WHERE id = ?', [postId]);
+  if ((posts as any[]).length === 0) throw new Error('帖子不存在');
   const [result] = await pool.query(
     'INSERT INTO comments (post_id, author_id, content) VALUES (?, ?, ?)',
     [postId, authorId, content]

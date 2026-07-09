@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Layout from "./components/Layout.js";
 import Home from "./pages/Home.js";
@@ -7,6 +7,7 @@ import Anniversary from "./pages/Anniversary.js";
 import Profile from "./pages/Profile.js";
 import Login from "./pages/Login.js";
 import PostCompose from "./pages/PostCompose.js";
+import EditPost from "./pages/EditPost.js";
 
 function ProtectedLayout() {
   const [authed, setAuthed] = useState<boolean | null>(null);
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/anniversary" element={<Anniversary />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/compose" element={<PostCompose />} />
+          <Route path="/edit/:id" element={<EditPost />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

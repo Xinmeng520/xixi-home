@@ -6,6 +6,7 @@ export default function PostCompose() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<File[]>([]);
+  const [isPinned, setIsPinned] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -13,12 +14,13 @@ export default function PostCompose() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!content.trim() && files.length === 0) { setError("请输入内容或上传图片"); return; }
+    if (!content.trim() && files.length === 0) { setError("记录点什么吧"); return; }
     setSubmitting(true); setError("");
     try {
       const formData = new FormData();
       if (title.trim()) formData.append("title", title);
       formData.append("content", content);
+      formData.append("is_pinned", isPinned ? "1" : "0");
       for (const file of files) formData.append("images", file);
       await request("/api/posts", { method: "POST", body: formData });
       navigate("/", { replace: true });
@@ -33,32 +35,52 @@ export default function PostCompose() {
   const removeFile = (idx: number) => { setFiles((prev) => prev.filter((_: File, i: number) => i !== idx)); };
 
   return (
-    <div className="px-4 pt-4 pb-6">
-      <div className="flex items-center justify-between mb-4">
-        <button onClick={() => navigate(-1)} className="text-sm text-warm-500">取消</button>
-        <h1 className="text-base font-semibold text-gray-900">发布动态</h1>
-        <button onClick={(e: React.MouseEvent) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); }} disabled={submitting} className={"text-sm font-medium text-warm-500 " + (submitting ? "opacity-50" : "")}>{submitting ? "发布中..." : "发布"}</button>
+    <div className="min-h-screen bg-gradient-to-b from-warm-50 via-orange-50/30 to-warm-50 px-5 pt-5 pb-28">
+      <div className="flex items-center justify-between mb-5">
+        <button onClick={() => navigate(-1)} className="text-sm text-warm-500 font-medium active:opacity-60 transition-opacity">取消</button>
+        <h1 className="text-sm font-medium text-warm-600 tracking-wide">记录我们的点点滴滴</h1>
+        <button onClick={(e: React.MouseEvent) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); }} disabled={submitting} className="px-5 py-2 rounded-full bg-gradient-to-r from-warm-400 to-warm-500 text-white text-xs font-medium shadow-lg shadow-warm-300/30 disabled:opacity-40 active:scale-95 transition-all">
+          {submitting ? "发布中..." : "发布"}
+        </button>
       </div>
-      {error && <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-xs text-red-500 mb-3">{error}</div>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="标题（可选）" className="w-full px-4 py-3 rounded-xl border border-warm-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-warm-400"/>
-        <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="分享你的心情..." rows={5} className="w-full px-4 py-3 rounded-xl border border-warm-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-warm-400 resize-none"/>
-        <div className="grid grid-cols-3 gap-2">
-          {files.map((file: File, i: number) => (
-            <div key={i} className="aspect-square rounded-xl overflow-hidden relative bg-warm-100">
-              <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover"/>
-              <button type="button" onClick={() => removeFile(i)} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/50 flex items-center justify-center"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-            </div>
-          ))}
-          {files.length < 9 && (
-            <button type="button" onClick={() => fileRef.current?.click()} className="aspect-square rounded-xl border-2 border-dashed border-warm-200 flex flex-col items-center justify-center text-warm-300">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <span className="text-[10px] mt-1">添加图片</span>
+
+      {error && <div className="bg-red-50/80 border border-red-100 rounded-2xl px-4 py-2.5 text-xs text-red-400 text-center mb-5">{error}</div>}
+
+      <div className="bg-white rounded-3xl p-5 shadow-soft">
+        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="标题（可选）" className="w-full px-4 py-3 rounded-2xl border border-warm-200 text-sm text-gray-700 placeholder:text-warm-300 focus:outline-none focus:border-warm-400 focus:ring-2 focus:ring-warm-100 transition-all mb-3" />
+
+        <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="此刻的想法..." rows={8} className="w-full px-4 py-3 rounded-2xl border border-warm-200 text-sm text-gray-700 placeholder:text-warm-300 focus:outline-none focus:border-warm-400 focus:ring-2 focus:ring-warm-100 resize-none transition-all leading-relaxed" />
+
+        {files.length > 0 && (
+          <div className="grid grid-cols-3 gap-2.5 mt-3">
+            {files.map((file: File, i: number) => (
+              <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-warm-100 relative group border border-warm-100">
+                <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover" />
+                <button type="button" onClick={() => removeFile(i)} className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-[366px]">
+        <div className="glass rounded-2xl px-4 py-3 flex items-center justify-between shadow-glow">
+          <div className="flex items-center gap-6">
+            <button type="button" onClick={() => fileRef.current?.click()} className="flex items-center gap-2 text-xs text-warm-500 hover:text-warm-600 transition-colors">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span className="font-medium">图片</span>
             </button>
-          )}
+            <button type="button" onClick={() => setIsPinned(!isPinned)} className={"flex items-center gap-2 text-xs font-medium transition-colors " + (isPinned ? "text-warm-500" : "text-warm-400 hover:text-warm-500")}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill={isPinned ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              <span>{isPinned ? "已置顶" : "置顶"}</span>
+            </button>
+          </div>
+          <p className="text-[10px] text-warm-300 font-light">{files.length}/9</p>
         </div>
-        <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={handleFiles}/>
-      </form>
+      </div>
+      <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={handleFiles} />
     </div>
   );
 }

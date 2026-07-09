@@ -1,34 +1,75 @@
-import multer from 'multer';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
-import { env } from '../config/env.js';
+import multer from "multer";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
+import { env } from "../config/env.js";
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    const dateDir = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const dir = path.join(env.upload.dir, dateDir);
-    fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename(req, file, cb) {
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, uuidv4() + ext);
-  },
-});
+function createUploadMiddleware(subFolder: string) {
+  const storage = multer.diskStorage({
+    destination(req, file, cb) {
+      const dateDir = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+      const dir = path.join(env.upload.dir, subFolder, dateDir);
+      fs.mkdirSync(dir, { recursive: true });
+      cb(null, dir);
+    },
+    filename(req, file, cb) {
+      const mimeToExt: Record<string, string> = {
+        "image/jpeg": ".jpg",
+        "image/png": ".png",
+        "image/gif": ".gif",
+        "image/webp": ".webp",
+        "image/bmp": ".bmp",
+      };
+      const origExt = path.extname(file.originalname).toLowerCase();
+      const validExts = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
+      const ext = mimeToExt[file.mimetype] || (validExts.includes(origExt) ? origExt : ".png");
+      const finalExt = ext === ".jpeg" ? ".jpg" : ext;
+      cb(null, uuidv4() + finalExt);
+    },
+  });
 
-const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowed = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'];
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (allowed.includes(ext)) {
-    cb(null, true);
-  } else {
-    cb(new Error('ä»…æ”¯æŒå›¾ç‰‡æ–‡ä»¶ (jpg/png/gif/webp/bmp)'));
-  }
+  const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/bmp"];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("½öÖ§³ÖÍ¼Æ¬ÎÄ¼þ¸ñÊ½"));
+    }
+  };
+
+  return multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: env.upload.maxFileSize },
+  });
+}
+
+export const uploadImage = {
+  array: (field: string, maxCount: number) => createUploadMiddleware("posts").array(field, maxCount),
+  single: (field: string) => createUploadMiddleware("posts").single(field),
 };
 
-export const uploadImage = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: env.upload.maxFileSize },
-});
+export const uploadPhoto = {
+  array: (field: string, maxCount: number) => createUploadMiddleware("photos").array(field, maxCount),
+  single: (field: string) => createUploadMiddleware("photos").single(field),
+};
+
+export const uploadAvatar = {
+  single: (field: string) => createUploadMiddleware("avatars").single(field),
+};
+
+// Multer error handler middleware
+export function uploadErrorHandler(err: any, _req: any, res: any, next: any) {
+  if (err) {
+    const message = err.code === "LIMIT_FILE_SIZE"
+      ? "ÎÄ¼þ¹ý´ó£¬×î´óÖ§³Ö10MB"
+      : err.code === "LIMIT_FILE_COUNT"
+      ? "ÎÄ¼þÊýÁ¿³¬³öÏÞÖÆ"
+      : err.code === "LIMIT_UNEXPECTED_FILE"
+      ? "ÒâÍâµÄÎÄ¼þ×Ö¶Î: " + err.field
+      : err.message || "ÉÏ´«Ê§°Ü";
+    res.status(400).json({ code: 400, message, data: null });
+  } else {
+    next();
+  }
+}

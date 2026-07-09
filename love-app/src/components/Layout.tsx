@@ -1,9 +1,9 @@
-import { Outlet } from "react-router-dom";
+﻿import { Outlet } from "react-router-dom";
 import BottomNav from "./BottomNav.js";
 
 export default function Layout() {
   return (
-    <div className="min-h-screen bg-warm-50 max-w-[390px] mx-auto pb-20 relative">
+    <div className="min-h-screen bg-warm-50 max-w-[390px] mx-auto pb-24 relative">
       <Outlet />
       <BottomNav />
     </div>

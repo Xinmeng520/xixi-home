@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000";
+﻿const API_BASE = "";
 
 export async function request<T = unknown>(url: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem("token");
