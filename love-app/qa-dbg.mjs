@@ -1,0 +1,17 @@
+﻿import { chromium } from "playwright";
+const bw = await chromium.launch({ headless: false, executablePath: "C:\\Users\\98203\\AppData\\Local\\ms-playwright\\chromium-1208\\chrome-win64\\chrome.exe" });
+const cx = await bw.newContext({ viewport: { width: 390, height: 844 } });
+const pg = await cx.newPage();
+pg.on("console", m => { if (m.type()==="error") console.log("CONSOLE:", m.text()); });
+pg.on("pageerror", e => console.log("PAGEERR:", e.message));
+await pg.goto("http://localhost:5173/login");
+await pg.waitForSelector("input[type=text]", { timeout: 5000 });
+await pg.fill("input[type=text]", "xixi");
+await pg.fill("input[type=password]", "123456");
+await pg.click("button[type=submit]");
+await pg.waitForTimeout(4000);
+console.log("URL:", pg.url());
+await pg.screenshot({ path: "qa-dbg.png" });
+const txt = await pg.evaluate(() => document.body.innerText.substring(0,300));
+console.log("TEXT:", txt);
+await bw.close();

@@ -47,7 +47,7 @@ export async function create(req: AuthRequest, res: Response) {
       content,
       author_id: req.user!.userId,
       images,
-      is_pinned: is_pinned ? 1 : 0,
+      is_pinned: is_pinned === "1" || is_pinned === 1 ? 1 : 0,
     });
     success(res, { id }, "发布成功");
   } catch (err) {
@@ -60,18 +60,24 @@ export async function update(req: AuthRequest, res: Response) {
     const id = Number(req.params.id);
     const { title, content, is_pinned } = req.body;
     if (!content) return fail(res, 1, "内容不能为空");
-    const images: string[] = [];
     const files = req.files as Express.Multer.File[];
+    const newImages: string[] = [];
     if (files && files.length > 0) {
       for (const f of files) {
-        images.push("/uploads/" + getRelPath(f.path));
+        newImages.push("/uploads/" + getRelPath(f.path));
       }
+    }
+    // retainedImages: URLs of existing images to keep (handles deletion on edit)
+    let retainedImages: string[] = [];
+    if (req.body.retainedImages) {
+      const raw = req.body.retainedImages;
+      retainedImages = Array.isArray(raw) ? raw : [raw];
     }
     await postService.updatePost(id, req.user!.userId, {
       title,
       content,
-      images: images.length > 0 ? images : undefined,
-      is_pinned: is_pinned ? 1 : 0,
+      images: (newImages.length > 0 || retainedImages.length > 0) ? [...retainedImages, ...newImages] : undefined,
+      is_pinned: is_pinned === "1" || is_pinned === 1 ? 1 : 0,
     });
     success(res, null, "更新成功");
   } catch (err) {
@@ -132,6 +138,25 @@ export async function addComment(req: AuthRequest, res: Response) {
     if (!content) return fail(res, 1, "评论内容不能为空");
     const commentId = await postService.addComment(id, req.user!.userId, content);
     success(res, { id: commentId }, "评论成功");
+  } catch (err) {
+    fail(res, 1, (err as Error).message);
+  }
+}
+
+export async function uploadImages(req: AuthRequest, res: Response) {
+  try {
+    const postId = Number(req.params.id);
+    const files = req.files as Express.Multer.File[];
+    if (!files || files.length === 0) return fail(res, 1, "请选择图片");
+    const { pool } = await import("../config/db.js");
+    for (const f of files) {
+      const imageUrl = "/uploads/" + getRelPath(f.path);
+      await pool.query(
+        "INSERT INTO post_images (post_id, image_url, sort_order) VALUES (?, ?, ?)",
+        [postId, imageUrl, 0]
+      );
+    }
+    success(res, null, "上传成功");
   } catch (err) {
     fail(res, 1, (err as Error).message);
   }

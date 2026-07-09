@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro'
+﻿import Taro from '@tarojs/taro'
 
 const API_BASE = 'https://api.xmblog.cn'
 
@@ -31,7 +31,7 @@ export async function request<T = any>(url: string, options: RequestOptions = {}
   const data = res.data as any
   if (data.code === 401) {
     Taro.removeStorageSync('token')
-    Taro.reLaunch({ url: '/src/pages/login/index' })
+    Taro.reLaunch({ url: '/pages/login/index' })
     throw new Error('Unauthorized')
   }
   if (data.code !== 0) {

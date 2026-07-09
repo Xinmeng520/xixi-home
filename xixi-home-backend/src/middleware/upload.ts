@@ -1,4 +1,4 @@
-import multer from "multer";
+ï»¿import multer from "multer";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
@@ -19,9 +19,11 @@ function createUploadMiddleware(subFolder: string) {
         "image/gif": ".gif",
         "image/webp": ".webp",
         "image/bmp": ".bmp",
+        "image/heic": ".heic",
+        "image/heif": ".heif",
       };
       const origExt = path.extname(file.originalname).toLowerCase();
-      const validExts = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
+      const validExts = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".heic", ".heif"];
       const ext = mimeToExt[file.mimetype] || (validExts.includes(origExt) ? origExt : ".png");
       const finalExt = ext === ".jpeg" ? ".jpg" : ext;
       cb(null, uuidv4() + finalExt);
@@ -29,11 +31,11 @@ function createUploadMiddleware(subFolder: string) {
   });
 
   const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/bmp"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/bmp", "image/heic", "image/heif"];
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("½öÖ§³ÖÍ¼Æ¬ÎÄ¼ş¸ñÊ½"));
+      cb(new Error("ä¸æ”¯æŒçš„å›¾ç‰‡æ–‡ä»¶æ ¼å¼"));
     }
   };
 
@@ -62,12 +64,12 @@ export const uploadAvatar = {
 export function uploadErrorHandler(err: any, _req: any, res: any, next: any) {
   if (err) {
     const message = err.code === "LIMIT_FILE_SIZE"
-      ? "ÎÄ¼ş¹ı´ó£¬×î´óÖ§³Ö10MB"
+      ? "æ–‡ä»¶è¿‡å¤§ï¼Œæœ€å¤§æ”¯æŒ10MB"
       : err.code === "LIMIT_FILE_COUNT"
-      ? "ÎÄ¼şÊıÁ¿³¬³öÏŞÖÆ"
+      ? "æ–‡ä»¶æ•°é‡è¶…å‡ºé™åˆ¶"
       : err.code === "LIMIT_UNEXPECTED_FILE"
-      ? "ÒâÍâµÄÎÄ¼ş×Ö¶Î: " + err.field
-      : err.message || "ÉÏ´«Ê§°Ü";
+      ? "æ„å¤–çš„æ–‡ä»¶å­—æ®µ: " + err.field
+      : err.message || "ä¸Šä¼ å¤±è´¥";
     res.status(400).json({ code: 400, message, data: null });
   } else {
     next();

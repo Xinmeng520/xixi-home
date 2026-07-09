@@ -1,0 +1,9 @@
+{
+  "presets": [
+    ["taro", {
+      "ts": true,
+      "framework": "react",
+      "reactJsxRuntime": "automatic"
+    }]
+  ]
+}

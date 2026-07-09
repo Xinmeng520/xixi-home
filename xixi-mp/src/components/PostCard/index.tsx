@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request } from '../../utils/request'
-import type { Post } from '../../utils/types'
+import { Post } from '../../utils/types'
 import './index.css'
 
 interface Props {

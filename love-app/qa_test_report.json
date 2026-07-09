@@ -1,0 +1,165 @@
+{
+  "timestamp": "2026-07-09T04:05:07.619Z",
+  "total": 31,
+  "passed": 30,
+  "failed": 1,
+  "results": [
+    {
+      "name": "Login page title",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Username input exists",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Password input exists",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Login button exists",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Login successful -> redirected",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Days together section",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Next anniversary section",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Compose page loaded",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Title input",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Content input",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Pin toggle -> ON",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Post published -> home",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Post cards visible on home (10)",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Comment input",
+      "status": "FAIL",
+      "error": "no input[type=text] with placeholder '评论' found"
+    },
+    {
+      "name": "Edit menu item visible",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Delete menu item visible",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Edit page opened",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Edit content changed",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Edit saved -> home",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Post deleted successfully",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Profile page loaded",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "User info displayed",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Nickname updated",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Avatar upload input exists (1)",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Album page loaded",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Album title visible",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Album data loaded (no skeleton)",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Album content rendered",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Anniversary page loaded",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Anniversary title visible",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Anniversary list shows (3 items)",
+      "status": "PASS",
+      "error": null
+    }
+  ],
+  "consoleErrors": [],
+  "httpErrors": []
+}

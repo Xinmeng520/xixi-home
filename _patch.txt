@@ -1,0 +1,13 @@
+﻿*** Begin Patch
+*** Update File: xixi-mp/src/app.config.ts
+@@ pages: [
+     'pages/login/index',
+     'pages/home/index',
+     'pages/compose/index',
+     'pages/anniversary/index',
+     'pages/album/index',
+-    'pages/profile/index'
++    'pages/profile/index',
++    'pages/edit-post/index'
+   ],
+*** End Patch

@@ -32,10 +32,9 @@ function PostCard({ post, currentUser, onDelete, onTogglePin }: { post: Post; cu
   const [commentText, setCommentText] = useState("");
   const [commentLoading, setCommentLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const [_deleting, setDeleting] = useState(false);
   const [_pinning, setPinning] = useState(false);
   const navigate = useNavigate();
-
   const isAuthor = post.author.id === currentUser;
 
   const toggleLike = async () => {
@@ -92,7 +91,7 @@ function PostCard({ post, currentUser, onDelete, onTogglePin }: { post: Post; cu
       <div className="flex items-center gap-3">
         <div className="w-11 h-11 rounded-full bg-gradient-to-br from-warm-200 to-warm-300 flex items-center justify-center text-white font-semibold text-sm shadow-md overflow-hidden ring-2 ring-white">
           {post.author.avatar ? (
-            <img src={post.author.avatar + (post.author.avatar.includes("?") ? "&" : "?") + "t=" + post.created_at} alt="" className="w-full h-full object-cover" />
+            <img src={post.author.avatar} alt="" className="w-full h-full object-cover" />
           ) : (
             post.author.nickname.charAt(0)
           )}
@@ -108,51 +107,61 @@ function PostCard({ post, currentUser, onDelete, onTogglePin }: { post: Post; cu
             </button>
             {showMenu && (
               <div className="absolute right-0 top-9 w-32 bg-white rounded-2xl shadow-glow border border-gray-50 z-20 overflow-hidden">
-                <button onClick={() => { setShowMenu(false); navigate("/edit/" + post.id); }} className="w-full px-4 py-3 text-xs text-left text-gray-700 hover:bg-gray-50 transition-colors">编辑</button>
-                <button onClick={() => { setShowMenu(false); togglePinPost(); }} className="w-full px-4 py-3 text-xs text-left text-gray-700 hover:bg-gray-50 transition-colors">{post.is_pinned === 1 ? "取消置顶" : "置顶"}</button>
-                <button onClick={() => { setShowMenu(false); handleDelete(); }} className="w-full px-4 py-3 text-xs text-left text-red-500 hover:bg-red-50 transition-colors">删除</button>
+                <button onClick={() => { setShowMenu(false); navigate("/edit/" + post.id); }} className="w-full px-4 py-2.5 text-left text-xs text-gray-600 hover:bg-warm-50 transition-colors">编辑</button>
+                <button onClick={() => { setShowMenu(false); togglePinPost(); }} className="w-full px-4 py-2.5 text-left text-xs text-gray-600 hover:bg-warm-50 transition-colors">{post.is_pinned ? "取消置顶" : "置顶"}</button>
+                <button onClick={() => { setShowMenu(false); handleDelete(); }} className="w-full px-4 py-2.5 text-left text-xs text-red-400 hover:bg-red-50 transition-colors">删除</button>
               </div>
             )}
           </div>
         )}
       </div>
-      {post.content && <p className="text-sm text-gray-700 mt-3 leading-relaxed whitespace-pre-wrap">{post.content}</p>}
+
+      {post.title && <p className="text-sm font-semibold text-gray-800 mt-3">{post.title}</p>}
+      <p className="text-sm text-gray-600 mt-1.5 leading-relaxed whitespace-pre-wrap">{post.content}</p>
+
       {post.images && post.images.length > 0 && (
-        <div className={"grid gap-2 mt-3 " + (post.images.length === 1 ? "grid-cols-1" : post.images.length === 2 ? "grid-cols-2" : "grid-cols-3")}>
-          {post.images.slice(0, 9).map((img: any, i: number) => (
-            <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-warm-100">
+        <div className={"mt-3 grid gap-2 " + (post.images.length === 1 ? "grid-cols-1" : post.images.length === 2 ? "grid-cols-2" : "grid-cols-3")}>
+          {post.images.map((img: any, idx: number) => (
+            <div key={idx} className={"rounded-2xl overflow-hidden bg-warm-50 " + (post.images.length === 1 ? "max-h-80" : "aspect-square")}>
               <img src={img.image_url} alt="" className="w-full h-full object-cover" />
             </div>
           ))}
         </div>
       )}
+
       <div className="flex items-center gap-6 mt-4 pt-3 border-t border-gray-50">
-        <button onClick={toggleLike} className={"flex items-center gap-1.5 text-xs transition-colors " + (liked ? "text-red-500" : "text-gray-400")}>
+        <button onClick={toggleLike} className={"flex items-center gap-1.5 text-xs transition-colors " + (liked ? "text-red-400" : "text-gray-400")}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           <span>{likeCount}</span>
         </button>
         <button onClick={toggleComments} className="flex items-center gap-1.5 text-xs text-gray-400">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span>{post.comment_count}</span>
+          <span>{comments.length || post.comment_count || ""}</span>
         </button>
       </div>
+
       {showComments && (
         <div className="mt-3 pt-3 border-t border-gray-50">
           {comments.length === 0 ? (
-            <p className="text-xs text-gray-300 text-center py-2">还没有评论</p>
+            <p className="text-xs text-gray-300 text-center py-3">暂无评论</p>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {comments.map((c) => (
                 <div key={c.id} className="flex items-start gap-2">
-                  <span className="text-xs font-medium text-warm-600 shrink-0">{c.author.nickname}</span>
-                  <span className="text-xs text-gray-600">{c.content}</span>
+                  <div className="w-6 h-6 rounded-full bg-warm-100 flex items-center justify-center text-[10px] text-warm-500 font-medium overflow-hidden flex-shrink-0">
+                    {c.author.avatar ? <img src={c.author.avatar} alt="" className="w-full h-full object-cover" /> : c.author.nickname.charAt(0)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-xs font-medium text-gray-700">{c.author.nickname}</span>
+                    <p className="text-xs text-gray-500 mt-0.5">{c.content}</p>
+                  </div>
                 </div>
               ))}
             </div>
           )}
           <form onSubmit={submitComment} className="flex items-center gap-2 mt-3">
-            <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="写下你的评论..." className="flex-1 px-3 py-2 rounded-xl border border-warm-100 text-xs focus:outline-none focus:border-warm-300" />
-            <button type="submit" disabled={commentLoading || !commentText.trim()} className="px-3 py-2 rounded-xl bg-warm-500 text-white text-xs font-medium disabled:opacity-40">发送</button>
+            <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="请评论..." className="flex-1 px-3 py-2 rounded-xl bg-gray-50 text-xs focus:outline-none focus:ring-1 focus:ring-warm-300" />
+            <button type="submit" disabled={commentLoading || !commentText.trim()} className="px-3 py-2 rounded-xl bg-warm-400 text-white text-xs font-medium disabled:opacity-40">发布</button>
           </form>
         </div>
       )}
@@ -165,30 +174,42 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [currentUser, setCurrentUser] = useState(0);
-  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState<number>(0);
 
   const fetchData = useCallback(async () => {
-    setLoading(true); setError("");
+    setLoading(true);
+    setError("");
     try {
-      const data = await request<HomeData>("/api/home");
-      setHomeData(data);
-      setPosts(data.latest_posts || []);
-      const me = await request<{ id: number }>("/api/auth/me");
-      setCurrentUser(me.id);
-    } catch (err: any) { setError(err.message || "加载失败"); }
-    finally { setLoading(false); }
+      const [home, postList, me] = await Promise.all([
+        request<HomeData>("/api/home"),
+        request<{items: Post[]}>("/api/posts"),
+        request<{ id: number }>("/api/auth/me").catch(() => null),
+      ]);
+      setHomeData(home);
+      setPosts(postList.items);
+      if (me) setCurrentUser(me.id);
+    } catch (err: any) {
+      setError(err.message || "加载失败");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  const handleDelete = (id: number) => { setPosts((prev) => prev.filter((p) => p.id !== id)); };
-  const handleTogglePin = (id: number, isPinned: number) => { setPosts((prev) => prev.map((p) => p.id === id ? { ...p, is_pinned: isPinned } : p).sort((a, b) => b.is_pinned - a.is_pinned)); };
+  const handleDelete = (id: number) => {
+    setPosts((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const handleTogglePin = (id: number, isPinned: number) => {
+    setPosts((prev) => prev.map((p) => p.id === id ? { ...p, is_pinned: isPinned } : p));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-warm-50 via-orange-50/20 to-warm-50">
-      <div className="relative px-6 pt-12 pb-10">
-        <div className="absolute top-0 left-0 right-0 h-full bg-gradient-to-b from-warm-100/60 via-warm-50/30 to-transparent pointer-events-none"></div>
+      {/* Literary Header - Non-card, open & airy */}
+      <div className="relative px-6 pt-8 pb-10 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-warm-100/40 via-warm-50/20 to-transparent pointer-events-none"></div>
         <div className="relative">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-warm-400 to-warm-500 flex items-center justify-center shadow-lg shadow-warm-300/30 rotate-[-3deg]">

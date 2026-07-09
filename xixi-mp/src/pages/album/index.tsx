@@ -1,8 +1,8 @@
-﻿import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request, uploadFile } from '../../utils/request'
-import type { Album, Photo } from '../../utils/types'
+import { Album, Photo } from '../../utils/types'
 import './index.css'
 
 export default function AlbumPage() {

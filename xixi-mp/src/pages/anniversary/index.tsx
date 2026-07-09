@@ -1,8 +1,8 @@
-﻿import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request } from '../../utils/request'
-import type { Anniversary } from '../../utils/types'
+import { Anniversary } from '../../utils/types'
 import './index.css'
 
 function formatDate(dateStr: string): string {

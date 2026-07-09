@@ -1,11 +1,12 @@
-export default defineAppConfig({
+﻿export default defineAppConfig({
   pages: [
-    'src/pages/login/index',
-    'src/pages/home/index',
-    'src/pages/compose/index',
-    'src/pages/anniversary/index',
-    'src/pages/album/index',
-    'src/pages/profile/index'
+    'pages/login/index',
+    'pages/home/index',
+    'pages/compose/index',
+    'pages/anniversary/index',
+    'pages/album/index',
+    'pages/profile/index',
+    'pages/edit-post/index'
   ],
   window: {
     backgroundTextStyle: 'light',
@@ -20,10 +21,10 @@ export default defineAppConfig({
     backgroundColor: '#ffffff',
     borderStyle: 'white',
     list: [
-      { pagePath: 'src/pages/home/index', text: '\u9996\u9875' },
-      { pagePath: 'src/pages/album/index', text: '\u76f8\u518c' },
-      { pagePath: 'src/pages/anniversary/index', text: '\u7eaa\u5ff5\u65e5' },
-      { pagePath: 'src/pages/profile/index', text: '\u6211\u7684' }
+      { pagePath: 'pages/home/index', text: '\u9996\u9875' },
+      { pagePath: 'pages/album/index', text: '\u76f8\u518c' },
+      { pagePath: 'pages/anniversary/index', text: '\u7eaa\u5ff5\u65e5' },
+      { pagePath: 'pages/profile/index', text: '\u6211\u7684' }
     ]
   },
   sitemapLocation: 'sitemap.json',

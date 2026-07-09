@@ -1,0 +1,85 @@
+[
+  {
+    "test": "Login",
+    "pass": true,
+    "detail": "Redirected after login: true"
+  },
+  {
+    "test": "Home header visible",
+    "pass": true,
+    "detail": "Header text: 熙熙小窝\n\nOUR LITTLE WORLD\n\nMAY 23, 2026\n\n46\n\n在一起\n\n37\n"
+  },
+  {
+    "test": "Days together shown",
+    "pass": true
+  },
+  {
+    "test": "Anniversary countdown shown",
+    "pass": true
+  },
+  {
+    "test": "Compose has textarea",
+    "pass": true,
+    "detail": "Count: 1"
+  },
+  {
+    "test": "Compose has file input",
+    "pass": true,
+    "detail": "Count: 1"
+  },
+  {
+    "test": "Compose has pin button",
+    "pass": true
+  },
+  {
+    "test": "Compose has upload button",
+    "pass": true
+  },
+  {
+    "test": "Input borders visible",
+    "pass": true,
+    "detail": "[{\"border\":\"1px solid oklch(0.967 0.003 264.542)\",\"borderWidth\":\"1px\",\"className\":\"w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 text-sm text-gray-\"},{\"border\":\"1px solid oklch(0.967 0.003 264.542)\",\"borderWidth\":\"1px\",\"className\":\"w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 text-sm text-gray-\"}]"
+  },
+  {
+    "test": "Post creation",
+    "pass": true,
+    "detail": "Post visible after creation"
+  },
+  {
+    "test": "Like button exists",
+    "pass": false
+  },
+  {
+    "test": "Comment button exists",
+    "pass": false,
+    "detail": "Count: 0"
+  },
+  {
+    "test": "Post menu exists",
+    "pass": false,
+    "detail": "Count: 0"
+  },
+  {
+    "test": "Profile has avatar upload",
+    "pass": true
+  },
+  {
+    "test": "Nickname edit exists",
+    "pass": false
+  },
+  {
+    "test": "Anniversary page loaded",
+    "pass": true,
+    "detail": "Text: 纪念日\n\n确定关系日\n\n每年\n\n2026-05-23\n\n319\n\n天后\n\n第一次旅行\n\n2026-08-15\n\n38\n\n天后\n\n首页\n相册\n纪念\n我的"
+  },
+  {
+    "test": "No console errors",
+    "pass": true,
+    "detail": "Errors: []"
+  },
+  {
+    "test": "No network failures",
+    "pass": true,
+    "detail": "Failures: []"
+  }
+]

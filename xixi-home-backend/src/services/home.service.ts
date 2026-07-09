@@ -7,10 +7,12 @@ function parseDate(input: any): Date {
   if (!input) return new Date();
   let y: number, m: number, d: number;
   if (input instanceof Date) {
-    // MySQL returns UTC dates. Use UTC components to get the intended calendar date.
-    y = input.getUTCFullYear();
-    m = input.getUTCMonth();
-    d = input.getUTCDate();
+    // MySQL driver interprets DATE as UTC midnight. Shift to local midnight by adding tz offset.
+    const offsetMs = input.getTimezoneOffset() * 60000;
+    const local = new Date(input.getTime() + offsetMs);
+    y = local.getFullYear();
+    m = local.getMonth();
+    d = local.getDate();
   } else {
     const str = String(input);
     // Handle both "YYYY-MM-DD" and "YYYY-MM-DDTHH:MM:SS.sssZ" formats

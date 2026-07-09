@@ -1,4 +1,4 @@
-import { pool } from '../config/db.js';
+﻿import { pool } from '../config/db.js';
 import { PostRow, PostImageRow, CommentRow, PostDetail, PostListItem } from '../types/index.js';
 
 export async function getList(page: number, pageSize: number) {
@@ -14,13 +14,22 @@ export async function getList(page: number, pageSize: number) {
     [pageSize, offset]
   );
   const items = rows as any[];
-  // Batch load images
-  for (const item of items) {
+  // Batch load images for all posts in ONE query (fix N+1)
+  if (items.length > 0) {
+    const postIds = items.map((item: any) => item.id);
+    const placeholders = postIds.map(() => '?').join(',');
     const [imgs] = await pool.query(
-      'SELECT id, image_url, sort_order FROM post_images WHERE post_id = ? ORDER BY sort_order',
-      [item.id]
+      'SELECT id, post_id, image_url, sort_order FROM post_images WHERE post_id IN (' + placeholders + ') ORDER BY sort_order',
+      postIds
     );
-    item.images = imgs as PostImageRow[];
+    const imagesMap: Record<number, any[]> = {};
+    for (const img of imgs as any[]) {
+      if (!imagesMap[img.post_id]) imagesMap[img.post_id] = [];
+      imagesMap[img.post_id].push(img);
+    }
+    for (const item of items) {
+      item.images = imagesMap[item.id] || [];
+    }
   }
   const [countRows] = await pool.query('SELECT COUNT(*) as total FROM posts');
   const total = (countRows as any[])[0].total;
