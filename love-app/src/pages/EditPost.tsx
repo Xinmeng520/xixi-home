@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { request } from "../utils/request.js";
 
@@ -39,6 +39,8 @@ export default function EditPost() {
       formData.append("content", content);
       formData.append("is_pinned", isPinned ? "1" : "0");
       for (const file of newFiles) formData.append("images", file);
+      for (const url of existingImages) formData.append("retainedImages", url);
+      
       await request("/api/posts/" + id, { method: "PUT", body: formData });
       navigate("/", { replace: true });
     } catch (err: any) { setError(err.message || "\u66f4\u65b0\u5931\u8d25"); setSubmitting(false); }
@@ -126,3 +128,5 @@ export default function EditPost() {
     </div>
   );
 }
+
+

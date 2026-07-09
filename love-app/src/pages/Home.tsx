@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+﻿import { useEffect, useState, useCallback } from "react";
 import { request } from "../utils/request.js";
 import { useNavigate } from "react-router-dom";
 import type { HomeData, Post } from "../utils/types.js";
@@ -92,7 +92,7 @@ function PostCard({ post, currentUser, onDelete, onTogglePin }: { post: Post; cu
       <div className="flex items-center gap-3">
         <div className="w-11 h-11 rounded-full bg-gradient-to-br from-warm-200 to-warm-300 flex items-center justify-center text-white font-semibold text-sm shadow-md overflow-hidden ring-2 ring-white">
           {post.author.avatar ? (
-            <img src={post.author.avatar} alt="" className="w-full h-full object-cover" />
+            <img src={post.author.avatar + (post.author.avatar.includes("?") ? "&" : "?") + "t=" + post.created_at} alt="" className="w-full h-full object-cover" />
           ) : (
             post.author.nickname.charAt(0)
           )}
@@ -266,7 +266,7 @@ export default function Home() {
             <p className="text-xs text-gray-300 mt-1">发第一条动态记录美好吧</p>
           </div>
         ) : (
-          posts.map((post: Post) => <PostCard key={post.id} post={post} currentUser={currentUser} onDelete={handleDelete} onTogglePin={handleTogglePin} />)
+          posts.map((post: Post) => <PostCard key={post.id} post={post} currentUser={Number(currentUser)} onDelete={handleDelete} onTogglePin={handleTogglePin} />)
         )}
       </div>
     </div>

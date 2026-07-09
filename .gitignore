@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 .pnpm-store/
 
@@ -29,6 +29,27 @@ console_test.cjs
 detail_test.cjs
 screenshot.cjs
 test_local.cjs
+*.py
+write_*.py
+check_*.py
+fix_*.py
+patch_tool.py
+*_test.js
+*_test.mjs
+e2e_*.mjs
+test_*.mjs
+test_*.js
+test_*.png
+*-test.png
+qa-*.png
+qa_final*.png
+screenshot_test.mjs
+*_test.png
+debug_*.mjs
+debug_*.png
+r0*.png
+compose_*.png
+compose_*.txt
 
 # Backend uploads (user content)
 xixi-home-backend/uploads/
@@ -50,9 +71,13 @@ npm-debug.log*
 .tmp-temp/
 .vite/
 .vite-temp/
+backup_*/
 
 # Debug / temp
 debug_page.png
 *.cjs
 src_backup_unicode/
 qa-final-*.png
+
+# OS
+Thumbs.db
