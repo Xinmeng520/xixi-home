@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const handleLogin = async () => {
-    if (!username.trim() || !password.trim()) { setError('\u8bf7\u8f93\u5165\u7528\u6237\u540d\u548c\u5bc6\u7801'); return }
+    if (!username.trim() || !password.trim()) { setError('请输入用户名和密码'); return }
     setLoading(true); setError('')
     try {
       const data = await request<{ token: string }>('/api/auth/login', {
@@ -19,8 +19,8 @@ export default function LoginPage() {
         body: JSON.stringify({ username, password })
       })
       Taro.setStorageSync('token', data.token)
-      Taro.reLaunch({ url: '/src/pages/home/index' })
-    } catch (err: any) { setError(err.message || '\u767b\u5f55\u5931\u8d25') }
+      Taro.reLaunch({ url: '/pages/home/index' })
+    } catch (err: any) { setError(err.message || '登录失败') }
     finally { setLoading(false) }
   }
 
@@ -31,20 +31,20 @@ export default function LoginPage() {
       <View className='login-content'>
         <View className='login-logo'>
           <View className='login-heart'>
-            <Text className='heart-icon'>\u2764</Text>
+            <Text className='heart-icon'>❤</Text>
           </View>
         </View>
-        <Text className='login-title'>\u7199\u7199\u5c0f\u7a9d</Text>
-        <Text className='login-subtitle'>\u767b\u5f55\u4f60\u7684\u5c0f\u4e16\u754c</Text>
+        <Text className='login-title'>熙熙小窝</Text>
+        <Text className='login-subtitle'>登录你的小世界</Text>
         <View className='login-form'>
-          <Input className='login-input' type='text' placeholder='\u8bf7\u8f93\u5165\u7528\u6237\u540d' value={username} onInput={e => setUsername(e.detail.value)} />
-          <Input className='login-input' password placeholder='\u8bf7\u8f93\u5165\u5bc6\u7801' value={password} onInput={e => setPassword(e.detail.value)} />
+          <Input className='login-input' type='text' placeholder='请输入用户名' value={username} onInput={e => setUsername(e.detail.value)} />
+          <Input className='login-input' password placeholder='请输入密码' value={password} onInput={e => setPassword(e.detail.value)} />
           {error && <Text className='login-error'>{error}</Text>}
           <Button className='login-btn' loading={loading} onClick={handleLogin}>
-            {loading ? '\u767b\u5f55\u4e2d...' : '\u767b \u5f55'}
+            {loading ? '登录中...' : '登 录'}
           </Button>
         </View>
-        <Text className='login-tip'>\u9ed8\u8ba4\u8d26\u53f7: xixi / 123456</Text>
+        <Text className='login-tip'>默认账号: xixi / 123456</Text>
       </View>
     </View>
   )

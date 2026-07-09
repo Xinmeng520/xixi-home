@@ -24,7 +24,7 @@ export default function EditPostPage() {
         setContent(post.content)
         setExistingImages((post.images || []).map((img: any) => img.image_url))
         setIsPinned(post.is_pinned === 1)
-      } catch (err: any) { setError(err.message || '\u52a0\u8f7d\u5931\u8d25') }
+      } catch (err: any) { setError(err.message || '加载失败') }
       finally { setLoading(false) }
     }
     if (id) fetchPost()
@@ -38,7 +38,7 @@ export default function EditPostPage() {
   }
 
   const handleSubmit = async () => {
-    if (!content.trim()) { setError('\u8bf7\u8f93\u5165\u5185\u5bb9'); return }
+    if (!content.trim()) { setError('请输入内容'); return }
     setSubmitting(true); setError('')
     try {
       await request('/api/posts/' + id, {
@@ -50,7 +50,7 @@ export default function EditPostPage() {
         await uploadFile(`/api/posts/${id}/images`, f, null, 'images')
       }
       Taro.navigateBack()
-    } catch (err: any) { setError(err.message || '\u66f4\u65b0\u5931\u8d25'); setSubmitting(false) }
+    } catch (err: any) { setError(err.message || '更新失败'); setSubmitting(false) }
   }
 
   if (loading) return <View className='compose-page'><View className='loading'><View /><View /></View></View>
@@ -58,32 +58,32 @@ export default function EditPostPage() {
   return (
     <View className='compose-page'>
       <View className='compose-nav'>
-        <Text className='compose-cancel' onClick={() => Taro.navigateBack()}>\u53d6\u6d88</Text>
-        <Text className='compose-title-text'>\u7f16\u8f91\u52a8\u6001</Text>
-        <Text className='compose-submit' onClick={handleSubmit}>{submitting ? '\u4fdd\u5b58\u4e2d' : '\u4fdd\u5b58'}</Text>
+        <Text className='compose-cancel' onClick={() => Taro.navigateBack()}>取消</Text>
+        <Text className='compose-title-text'>编辑动态</Text>
+        <Text className='compose-submit' onClick={handleSubmit}>{submitting ? '保存中' : '保存'}</Text>
       </View>
       {error && <Text className='compose-error'>{error}</Text>}
       <View className='compose-card'>
-        <Input className='compose-input' placeholder='\u6807\u9898\uff08\u53ef\u9009\uff09' value={title} onInput={e => setTitle(e.detail.value)} />
-        <Textarea className='compose-textarea' placeholder='\u6b64\u523b\u7684\u60f3\u6cd5...' value={content} onInput={e => setContent(e.detail.value)} autoHeight />
+        <Input className='compose-input' placeholder='标题（可选）' value={title} onInput={e => setTitle(e.detail.value)} />
+        <Textarea className='compose-textarea' placeholder='此刻的想法...' value={content} onInput={e => setContent(e.detail.value)} autoHeight />
         {existingImages.length > 0 && (
           <View className='compose-images'>
             {existingImages.map((url, i) => (
-              <View key={'old-'+i} className='compose-img-wrap'><Image src={url} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => setExistingImages(prev => prev.filter((_, idx) => idx !== i))}>\u2716</View></View>
+              <View key={'old-'+i} className='compose-img-wrap'><Image src={url} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => setExistingImages(prev => prev.filter((_, idx) => idx !== i))}>✖</View></View>
             ))}
           </View>
         )}
         {newFiles.length > 0 && (
           <View className='compose-images'>
             {newFiles.map((f, i) => (
-              <View key={'new-'+i} className='compose-img-wrap'><Image src={f} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => setNewFiles(prev => prev.filter((_, idx) => idx !== i))}>\u2716</View></View>
+              <View key={'new-'+i} className='compose-img-wrap'><Image src={f} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => setNewFiles(prev => prev.filter((_, idx) => idx !== i))}>✖</View></View>
             ))}
           </View>
         )}
       </View>
       <View className='compose-toolbar'>
-        <View className='toolbar-btn' onClick={chooseImages}><Text>\ud83d\uddbc</Text><Text className='toolbar-label'>\u56fe\u7247</Text></View>
-        <View className={'toolbar-btn ' + (isPinned ? 'active' : '')} onClick={() => setIsPinned(!isPinned)}><Text>\ud83d\udccc</Text><Text className='toolbar-label'>{isPinned ? '\u5df2\u7f6e\u9876' : '\u7f6e\u9876'}</Text></View>
+        <View className='toolbar-btn' onClick={chooseImages}><Text>🖼</Text><Text className='toolbar-label'>图片</Text></View>
+        <View className={'toolbar-btn ' + (isPinned ? 'active' : '')} onClick={() => setIsPinned(!isPinned)}><Text>📌</Text><Text className='toolbar-label'>{isPinned ? '已置顶' : '置顶'}</Text></View>
       </View>
     </View>
   )

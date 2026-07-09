@@ -20,7 +20,7 @@ export default function ProfilePage() {
     try {
       const data = await request<User>('/api/auth/me')
       setUser(data)
-    } catch (err: any) { setError(err.message || '\u52a0\u8f7d\u5931\u8d25') }
+    } catch (err: any) { setError(err.message || '加载失败') }
     finally { setLoading(false) }
   }, [])
 
@@ -34,7 +34,7 @@ export default function ProfilePage() {
     try {
       await request('/api/auth/profile', { method: 'PUT', body: JSON.stringify({ nickname: nickname.trim() }) })
       setEditMode(false); fetchProfile()
-    } catch (err: any) { setError(err.message || '\u4fdd\u5b58\u5931\u8d25') }
+    } catch (err: any) { setError(err.message || '保存失败') }
     finally { setSubmitting(false) }
   }
 
@@ -44,8 +44,8 @@ export default function ProfilePage() {
     try {
       await request('/api/auth/password', { method: 'PUT', body: JSON.stringify({ old_password: oldPassword, new_password: newPassword }) })
       setOldPassword(''); setNewPassword('')
-      Taro.showToast({ title: '\u4fee\u6539\u6210\u529f', icon: 'success' })
-    } catch (err: any) { setError(err.message || '\u4fee\u6539\u5931\u8d25') }
+      Taro.showToast({ title: '修改成功', icon: 'success' })
+    } catch (err: any) { setError(err.message || '修改失败') }
     finally { setSubmitting(false) }
   }
 
@@ -55,17 +55,17 @@ export default function ProfilePage() {
       const filePath = res.tempFiles[0].tempFilePath
       const result = await uploadFile('/api/auth/avatar', filePath, undefined, 'avatar')
       setUser(prev => prev ? { ...prev, avatar: result.url } : prev)
-      Taro.showToast({ title: '\u4e0a\u4f20\u6210\u529f', icon: 'success' })
+      Taro.showToast({ title: '上传成功', icon: 'success' })
     } catch (err: any) {
-      if (err.errMsg?.indexOf('cancel') === -1) setError(err.message || '\u4e0a\u4f20\u5931\u8d25')
+      if (err.errMsg?.indexOf('cancel') === -1) setError(err.message || '上传失败')
     }
   }
 
   const handleLogout = async () => {
-    const res = await Taro.showModal({ title: '\u63d0\u793a', content: '\u786e\u5b9a\u9000\u51fa\u767b\u5f55\u5417\uff1f' })
+    const res = await Taro.showModal({ title: '提示', content: '确定退出登录吗？' })
     if (!res.confirm) return
     Taro.removeStorageSync('token')
-    Taro.reLaunch({ url: '/src/pages/login/index' })
+    Taro.reLaunch({ url: '/pages/login/index' })
   }
 
   if (loading) {
@@ -93,7 +93,7 @@ export default function ProfilePage() {
             }
           </View>
           <View className='profile-avatar-edit'>
-            <Text className='avatar-edit-icon'>\ud83d\udcf8</Text>
+            <Text className='avatar-edit-icon'>📸</Text>
           </View>
         </View>
         <Text className='profile-name'>{user?.nickname}</Text>
@@ -101,23 +101,23 @@ export default function ProfilePage() {
       </View>
 
       <View className='profile-section'>
-        <Text className='profile-section-title'>\u4e2a\u4eba\u4fe1\u606f</Text>
+        <Text className='profile-section-title'>个人信息</Text>
         <View className='profile-field'>
-          <Text className='profile-field-label'>\u663e\u793a\u540d\u79f0</Text>
+          <Text className='profile-field-label'>显示名称</Text>
           {!editMode ? (
             <View className='profile-field-row'>
               <Text className='profile-field-value'>{user?.nickname}</Text>
               <View className='profile-edit-btn' onClick={handleEdit}>
-                <Text className='profile-edit-icon'>\u270e</Text>
+                <Text className='profile-edit-icon'>✎</Text>
               </View>
             </View>
           ) : (
             <View className='profile-edit-form'>
-              <Input className='profile-input' placeholder='\u663e\u793a\u540d\u79f0' value={nickname} onInput={e => setNickname(e.detail.value)} />
+              <Input className='profile-input' placeholder='显示名称' value={nickname} onInput={e => setNickname(e.detail.value)} />
               <View className='profile-form-actions'>
-                <View className='profile-btn-cancel' onClick={() => setEditMode(false)}><Text>\u53d6\u6d88</Text></View>
+                <View className='profile-btn-cancel' onClick={() => setEditMode(false)}><Text>取消</Text></View>
                 <View className={'profile-btn-save ' + (submitting ? 'disabled' : '')} onClick={handleSaveProfile}>
-                  <Text>{submitting ? '\u4fdd\u5b58\u4e2d...' : '\u4fdd\u5b58'}</Text>
+                  <Text>{submitting ? '保存中...' : '保存'}</Text>
                 </View>
               </View>
             </View>
@@ -126,19 +126,19 @@ export default function ProfilePage() {
       </View>
 
       <View className='profile-section'>
-        <Text className='profile-section-title'>\u4fee\u6539\u5bc6\u7801</Text>
+        <Text className='profile-section-title'>修改密码</Text>
         <View className='profile-field'>
-          <Input className='profile-input' password placeholder='\u65e7\u5bc6\u7801' value={oldPassword} onInput={e => setOldPassword(e.detail.value)} />
-          <Input className='profile-input' password placeholder='\u65b0\u5bc6\u7801' value={newPassword} onInput={e => setNewPassword(e.detail.value)} />
+          <Input className='profile-input' password placeholder='旧密码' value={oldPassword} onInput={e => setOldPassword(e.detail.value)} />
+          <Input className='profile-input' password placeholder='新密码' value={newPassword} onInput={e => setNewPassword(e.detail.value)} />
           <View className='profile-btn-save full' onClick={handleChangePassword}>
-            <Text>{submitting ? '\u4fdd\u5b58\u4e2d...' : '\u4fee\u6539\u5bc6\u7801'}</Text>
+            <Text>{submitting ? '保存中...' : '修改密码'}</Text>
           </View>
         </View>
       </View>
 
       <View className='profile-section'>
         <View className='profile-logout-btn' onClick={handleLogout}>
-          <Text>\u9000\u51fa\u767b\u5f55</Text>
+          <Text>退出登录</Text>
         </View>
       </View>
     </View>

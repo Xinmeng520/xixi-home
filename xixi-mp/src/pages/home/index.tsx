@@ -21,7 +21,7 @@ export default function HomePage() {
       setPosts(data.latest_posts || [])
       const me = await request<{ id: number }>('/api/auth/me')
       setCurrentUser(me.id)
-    } catch (err: any) { setError(err.message || '\u52a0\u8f7d\u5931\u8d25') }
+    } catch (err: any) { setError(err.message || '加载失败') }
     finally { setLoading(false) }
   }, [])
 
@@ -41,10 +41,10 @@ export default function HomePage() {
         <View className='home-hero-bg'></View>
         <View className='home-header-row'>
           <View className='home-heart-icon'>
-            <Text className='heart-symbol'>\u2764</Text>
+            <Text className='heart-symbol'>❤</Text>
           </View>
           <View>
-            <Text className='home-title'>\u7199\u7199\u5c0f\u7a9d</Text>
+            <Text className='home-title'>熙熙小窝</Text>
             <Text className='home-subtitle'>Our Little World</Text>
           </View>
         </View>
@@ -54,7 +54,7 @@ export default function HomePage() {
             <View className='home-days-section'>
               <Text className='home-label-sm'>Together For</Text>
               <Text className='home-days-num'>{homeData.days_together}</Text>
-              <Text className='home-days-unit'>\u5929 \u00b7 \u5728\u4e00\u8d77</Text>
+              <Text className='home-days-unit'>天 · 在一起</Text>
             </View>
 
             <View className='home-divider'>
@@ -65,10 +65,10 @@ export default function HomePage() {
 
             <View className='home-anniv-section'>
               <Text className='home-label-sm'>Next Chapter</Text>
-              <Text className='home-anniv-title'>{homeData.next_anniversary ? homeData.next_anniversary.title : '\u7eaa\u5ff5\u65e5'}</Text>
+              <Text className='home-anniv-title'>{homeData.next_anniversary ? homeData.next_anniversary.title : '纪念日'}</Text>
               <View className='home-anniv-days-row'>
                 <Text className='home-anniv-days'>{homeData.next_anniversary ? homeData.next_anniversary.days_left : 0}</Text>
-                <Text className='home-anniv-unit'>\u5929</Text>
+                <Text className='home-anniv-unit'>天</Text>
               </View>
             </View>
           </View>
@@ -80,7 +80,7 @@ export default function HomePage() {
         {error && (
           <View className='home-error'>
             <Text>{error}</Text>
-            <Text className='home-retry' onClick={() => fetchData()}>\u91cd\u8bd5</Text>
+            <Text className='home-retry' onClick={() => fetchData()}>重试</Text>
           </View>
         )}
         {loading ? (
@@ -89,9 +89,9 @@ export default function HomePage() {
           </View>
         ) : posts.length === 0 ? (
           <View className='home-empty'>
-            <Text className='empty-icon'>\u2728</Text>
-            <Text>\u6682\u65e0\u52a8\u6001</Text>
-            <Text className='empty-sub'>\u53d1\u7b2c\u4e00\u6761\u52a8\u6001\u8bb0\u5f55\u7f8e\u597d\u5427</Text>
+            <Text className='empty-icon'>✨</Text>
+            <Text>暂无动态</Text>
+            <Text className='empty-sub'>发第一条动态记录美好吧</Text>
           </View>
         ) : (
           posts.map(post => <PostCard key={post.id} post={post} currentUser={currentUser} onDelete={handleDelete} onTogglePin={handleTogglePin} />)

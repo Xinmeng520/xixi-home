@@ -23,7 +23,7 @@ export default function AlbumPage() {
     try {
       const data = await request<Album[]>('/api/albums')
       setAlbums(data)
-    } catch (err: any) { setError(err.message || '\u52a0\u8f7d\u5931\u8d25') }
+    } catch (err: any) { setError(err.message || '加载失败') }
     finally { setLoading(false) }
   }, [])
 
@@ -32,7 +32,7 @@ export default function AlbumPage() {
     try {
       const data = await request<Photo[]>('/api/albums/' + albumId + '/photos')
       setPhotos(data)
-    } catch (err: any) { setError(err.message || '\u52a0\u8f7d\u5931\u8d25') }
+    } catch (err: any) { setError(err.message || '加载失败') }
   }, [])
 
   useEffect(() => { fetchAlbums() }, [fetchAlbums])
@@ -51,11 +51,11 @@ export default function AlbumPage() {
       if (editingAlbum) { await request('/api/albums/' + editingAlbum.id, { method: 'PUT', body }) }
       else { await request('/api/albums', { method: 'POST', body }) }
       setShowAlbumForm(false); fetchAlbums()
-    } catch (err: any) { setError(err.message || '\u4fdd\u5b58\u5931\u8d25') }
+    } catch (err: any) { setError(err.message || '保存失败') }
   }
 
   const handleDeleteAlbum = async (id: number) => {
-    const res = await Taro.showModal({ title: '\u63d0\u793a', content: '\u786e\u5b9a\u5220\u9664\u8fd9\u4e2a\u76f8\u518c\u5417\uff1f' })
+    const res = await Taro.showModal({ title: '提示', content: '确定删除这个相册吗？' })
     if (!res.confirm) return
     try { await request('/api/albums/' + id, { method: 'DELETE' }); fetchAlbums() } catch (e) {}
   }
@@ -70,12 +70,12 @@ export default function AlbumPage() {
       }
       fetchPhotos(uploadAlbum)
     } catch (err: any) {
-      if (err.errMsg?.indexOf('cancel') === -1) setError(err.message || '\u4e0a\u4f20\u5931\u8d25')
+      if (err.errMsg?.indexOf('cancel') === -1) setError(err.message || '上传失败')
     }
   }
 
   const handleDeletePhoto = async (id: number) => {
-    const res = await Taro.showModal({ title: '\u63d0\u793a', content: '\u786e\u5b9a\u5220\u9664\u8fd9\u5f20\u7167\u7247\u5417\uff1f' })
+    const res = await Taro.showModal({ title: '提示', content: '确定删除这张照片吗？' })
     if (!res.confirm) return
     try { await request('/api/photos/' + id, { method: 'DELETE' }); if (activeAlbum !== null) fetchPhotos(activeAlbum) } catch (e) {}
   }
@@ -86,7 +86,7 @@ export default function AlbumPage() {
       <View className='album-page'>
         <View className='album-photo-header'>
           <View className='album-back-btn' onClick={() => setActiveAlbum(null)}>
-            <Text className='album-back-icon'>\u2190</Text>
+            <Text className='album-back-icon'>←</Text>
           </View>
           <Text className='album-photo-title'>{album?.name}</Text>
           <View className='album-upload-btn' onClick={() => { setUploadAlbum(activeAlbum); setShowUpload(true) }}>
@@ -97,7 +97,7 @@ export default function AlbumPage() {
         <ScrollView className='album-photo-grid-scroll' scrollY>
           <View className='album-photo-grid'>
             {photos.length === 0 ? (
-              <View className='album-empty'><Text>\u8fd8\u6ca1\u6709\u7167\u7247</Text></View>
+              <View className='album-empty'><Text>还没有照片</Text></View>
             ) : (
               photos.map(photo => (
                 <View key={photo.id} className='album-photo-item' onLongPress={() => handleDeletePhoto(photo.id)}>
@@ -111,11 +111,11 @@ export default function AlbumPage() {
         {showUpload && (
           <View className='album-modal-overlay' onClick={() => setShowUpload(false)}>
             <View className='album-confirm' onClick={(e: any) => e.stopPropagation()}>
-              <Text className='album-confirm-title'>\u4e0a\u4f20\u7167\u7247</Text>
-              <Text className='album-confirm-text'>\u9009\u62e9\u8981\u4e0a\u4f20\u7684\u7167\u7247\uff08\u6700\u591a9\u5f20\uff09</Text>
+              <Text className='album-confirm-title'>上传照片</Text>
+              <Text className='album-confirm-text'>选择要上传的照片（最多9张）</Text>
               <View className='album-confirm-actions'>
-                <View className='album-btn-cancel' onClick={() => setShowUpload(false)}><Text>\u53d6\u6d88</Text></View>
-                <View className='album-btn-save' onClick={handleUploadPhoto}><Text>\u9009\u62e9\u7167\u7247</Text></View>
+                <View className='album-btn-cancel' onClick={() => setShowUpload(false)}><Text>取消</Text></View>
+                <View className='album-btn-save' onClick={handleUploadPhoto}><Text>选择照片</Text></View>
               </View>
             </View>
           </View>
@@ -127,7 +127,7 @@ export default function AlbumPage() {
   return (
     <View className='album-page'>
       <View className='album-header'>
-        <Text className='album-title'>\u76f8\u518c</Text>
+        <Text className='album-title'>相册</Text>
         <View className='album-add-btn' onClick={openAddAlbum}>
           <Text className='album-add-icon'>+</Text>
         </View>
@@ -143,9 +143,9 @@ export default function AlbumPage() {
           </View>
         ) : albums.length === 0 ? (
           <View className='album-empty'>
-            <Text className='empty-icon'>\u2728</Text>
-            <Text>\u8fd8\u6ca1\u6709\u76f8\u518c</Text>
-            <Text className='empty-sub'>\u70b9\u51fb\u53f3\u4e0a\u89d2\u521b\u5efa</Text>
+            <Text className='empty-icon'>✨</Text>
+            <Text>还没有相册</Text>
+            <Text className='empty-sub'>点击右上角创建</Text>
           </View>
         ) : (
           albums.map(album => (
@@ -153,19 +153,19 @@ export default function AlbumPage() {
               <View className='album-cover'>
                 {album.cover_url
                   ? <Image src={album.cover_url} mode='aspectFill' className='album-cover-img' />
-                  : <View className='album-cover-placeholder'><Text>\ud83d\uddbc</Text></View>
+                  : <View className='album-cover-placeholder'><Text>🖼</Text></View>
                 }
               </View>
               <View className='album-card-info'>
                 <Text className='album-card-name'>{album.name}</Text>
-                <Text className='album-card-count'>{album.photo_count || 0} \u5f20</Text>
+                <Text className='album-card-count'>{album.photo_count || 0} 张</Text>
               </View>
               <View className='album-card-actions' onClick={(e: any) => e.stopPropagation()}>
                 <View className='album-action-btn' onClick={() => openEditAlbum(album)}>
-                  <Text className='album-action-icon'>\u270e</Text>
+                  <Text className='album-action-icon'>✎</Text>
                 </View>
                 <View className='album-action-btn' onClick={() => handleDeleteAlbum(album.id)}>
-                  <Text className='album-action-icon danger'>\u2716</Text>
+                  <Text className='album-action-icon danger'>✖</Text>
                 </View>
               </View>
             </View>
@@ -177,15 +177,15 @@ export default function AlbumPage() {
         <View className='album-modal-overlay' onClick={() => setShowAlbumForm(false)}>
           <View className='album-modal' onClick={(e: any) => e.stopPropagation()}>
             <View className='album-modal-handle'></View>
-            <Text className='album-modal-title'>{editingAlbum ? '\u7f16\u8f91\u76f8\u518c' : '\u65b0\u589e\u76f8\u518c'}</Text>
+            <Text className='album-modal-title'>{editingAlbum ? '编辑相册' : '新增相册'}</Text>
             <View className='album-form'>
-              <Text className='album-label'>\u540d\u79f0</Text>
-              <Input className='album-input' placeholder='\u76f8\u518c\u540d\u79f0' value={albumName} onInput={e => setAlbumName(e.detail.value)} />
-              <Text className='album-label'>\u63cf\u8ff0</Text>
-              <Input className='album-input' placeholder='\u53ef\u9009' value={albumDesc} onInput={e => setAlbumDesc(e.detail.value)} />
+              <Text className='album-label'>名称</Text>
+              <Input className='album-input' placeholder='相册名称' value={albumName} onInput={e => setAlbumName(e.detail.value)} />
+              <Text className='album-label'>描述</Text>
+              <Input className='album-input' placeholder='可选' value={albumDesc} onInput={e => setAlbumDesc(e.detail.value)} />
               <View className='album-form-actions'>
-                <View className='album-btn-cancel' onClick={() => setShowAlbumForm(false)}><Text>\u53d6\u6d88</Text></View>
-                <View className='album-btn-save' onClick={handleAlbumSubmit}><Text>\u4fdd\u5b58</Text></View>
+                <View className='album-btn-cancel' onClick={() => setShowAlbumForm(false)}><Text>取消</Text></View>
+                <View className='album-btn-save' onClick={handleAlbumSubmit}><Text>保存</Text></View>
               </View>
             </View>
           </View>

@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-07-09T04:05:07.619Z",
+  "timestamp": "2026-07-09T04:09:29.239Z",
   "total": 31,
-  "passed": 30,
-  "failed": 1,
+  "passed": 31,
+  "failed": 0,
   "results": [
     {
       "name": "Login page title",
@@ -70,9 +70,9 @@
       "error": null
     },
     {
-      "name": "Comment input",
-      "status": "FAIL",
-      "error": "no input[type=text] with placeholder '评论' found"
+      "name": "Comment posted successfully",
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "Edit menu item visible",

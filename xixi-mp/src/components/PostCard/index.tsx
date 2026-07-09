@@ -17,13 +17,13 @@ function formatTime(dateStr: string): string {
   const now = new Date()
   const diff = now.getTime() - date.getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return '\u521a\u521a'
-  if (mins < 60) return mins + '\u5206\u949f\u524d'
+  if (mins < 1) return '刚刚'
+  if (mins < 60) return mins + '分钟前'
   const hours = Math.floor(mins / 60)
-  if (hours < 24) return hours + '\u5c0f\u65f6\u524d'
+  if (hours < 24) return hours + '小时前'
   const days = Math.floor(hours / 24)
-  if (days < 30) return days + '\u5929\u524d'
-  return (date.getMonth() + 1) + '\u6708' + date.getDate() + '\u65e5'
+  if (days < 30) return days + '天前'
+  return (date.getMonth() + 1) + '月' + date.getDate() + '日'
 }
 
 export default function PostCard({ post, currentUser, onDelete, onTogglePin }: Props) {
@@ -66,7 +66,7 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
   }
 
   const handleDelete = async () => {
-    const res = await Taro.showModal({ title: '\u63d0\u793a', content: '\u786e\u5b9a\u5220\u9664\u8fd9\u6761\u52a8\u6001\u5417\uff1f' })
+    const res = await Taro.showModal({ title: '提示', content: '确定删除这条动态吗？' })
     if (!res.confirm) return
     try { await request('/api/posts/' + post.id, { method: 'DELETE' }); onDelete(post.id) } catch (e) {}
   }
@@ -80,7 +80,7 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
 
   return (
     <View className='post-card'>
-      {post.is_pinned === 1 && <View className='post-pinned'>\u7f6e\u9876</View>}
+      {post.is_pinned === 1 && <View className='post-pinned'>置顶</View>}
       <View className='post-header'>
         <View className='post-avatar'>
           {post.author.avatar
@@ -99,9 +99,9 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
             </View>
             {showMenu && (
               <View className='post-menu-dropdown'>
-                <View className='menu-item' onClick={() => { setShowMenu(false); Taro.navigateTo({ url: '/src/pages/edit-post/index?id=' + post.id }) }}>\u7f16\u8f91</View>
-                <View className='menu-item' onClick={() => { setShowMenu(false); togglePin() }}>{post.is_pinned === 1 ? '\u53d6\u6d88\u7f6e\u9876' : '\u7f6e\u9876'}</View>
-                <View className='menu-item danger' onClick={() => { setShowMenu(false); handleDelete() }}>\u5220\u9664</View>
+                <View className='menu-item' onClick={() => { setShowMenu(false); Taro.navigateTo({ url: '/pages/edit-post/index?id=' + post.id }) }}>编辑</View>
+                <View className='menu-item' onClick={() => { setShowMenu(false); togglePin() }}>{post.is_pinned === 1 ? '取消置顶' : '置顶'}</View>
+                <View className='menu-item danger' onClick={() => { setShowMenu(false); handleDelete() }}>删除</View>
               </View>
             )}
           </View>
@@ -124,11 +124,11 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
 
       <View className='post-actions'>
         <View className={'action-btn ' + (liked ? 'liked' : '')} onClick={toggleLike}>
-          <Text className='action-icon'>{liked ? '\u2764' : '\u2661'}</Text>
+          <Text className='action-icon'>{liked ? '❤' : '♡'}</Text>
           <Text className='action-count'>{likeCount}</Text>
         </View>
         <View className='action-btn' onClick={toggleComments}>
-          <Text className='action-icon'>\u2709</Text>
+          <Text className='action-icon'>✉</Text>
           <Text className='action-count'>{post.comment_count}</Text>
         </View>
       </View>
@@ -136,7 +136,7 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
       {showComments && (
         <View className='post-comments'>
           {comments.length === 0
-            ? <Text className='no-comments'>\u8fd8\u6ca1\u6709\u8bc4\u8bba</Text>
+            ? <Text className='no-comments'>还没有评论</Text>
             : comments.map(c => (
               <View key={c.id} className='comment-item'>
                 <Text className='comment-author'>{c.author.nickname}</Text>
@@ -145,9 +145,9 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
             ))
           }
           <View className='comment-input-row'>
-            <Input className='comment-input' placeholder='\u5199\u4e0b\u4f60\u7684\u8bc4\u8bba...' value={commentText} onInput={e => setCommentText(e.detail.value)} confirm-type='send' onConfirm={submitComment} />
+            <Input className='comment-input' placeholder='写下你的评论...' value={commentText} onInput={e => setCommentText(e.detail.value)} confirm-type='send' onConfirm={submitComment} />
             <View className='comment-send' onClick={submitComment}>
-              <Text>\u53d1\u9001</Text>
+              <Text>发送</Text>
             </View>
           </View>
         </View>

@@ -1,6 +1,6 @@
 ﻿import Taro from '@tarojs/taro'
 
-const API_BASE = 'https://api.xmblog.cn'
+const API_BASE = 'http://localhost:3000'
 
 interface RequestOptions {
   method?: string

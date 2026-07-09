@@ -1,4 +1,4 @@
 export default definePageConfig({
-  navigationBarTitleText: '\u767b\u5f55',
+  navigationBarTitleText: '登录',
   navigationStyle: 'custom'
 })

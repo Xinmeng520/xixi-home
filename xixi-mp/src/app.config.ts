@@ -11,7 +11,7 @@
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText: '\u7199\u7199\u5c0f\u7a9d',
+    navigationBarTitleText: '熙熙小窝',
     navigationBarTextStyle: 'black',
     backgroundColor: '#fffaf5'
   },
@@ -21,10 +21,10 @@
     backgroundColor: '#ffffff',
     borderStyle: 'white',
     list: [
-      { pagePath: 'pages/home/index', text: '\u9996\u9875' },
-      { pagePath: 'pages/album/index', text: '\u76f8\u518c' },
-      { pagePath: 'pages/anniversary/index', text: '\u7eaa\u5ff5\u65e5' },
-      { pagePath: 'pages/profile/index', text: '\u6211\u7684' }
+      { pagePath: 'pages/home/index', text: '首页' },
+      { pagePath: 'pages/album/index', text: '相册' },
+      { pagePath: 'pages/anniversary/index', text: '纪念日' },
+      { pagePath: 'pages/profile/index', text: '我的' }
     ]
   },
   sitemapLocation: 'sitemap.json',
