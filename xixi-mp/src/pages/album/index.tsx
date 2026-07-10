@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request, uploadFile, resolveImageUrl } from '../../utils/request'
@@ -17,6 +17,12 @@ export default function AlbumPage() {
   const [editingAlbum, setEditingAlbum] = useState<Album | null>(null)
   const [showUpload, setShowUpload] = useState(false)
   const [uploadAlbum, setUploadAlbum] = useState<number | null>(null)
+
+  // Photo viewer state
+  const [viewerOpen, setViewerOpen] = useState(false)
+  const [viewerIndex, setViewerIndex] = useState(0)
+  const [viewerPhotos, setViewerPhotos] = useState<Photo[]>([])
+  const [deleteMode, setDeleteMode] = useState(false)
 
   const fetchAlbums = useCallback(async () => {
     setLoading(true); setError('')
@@ -74,34 +80,154 @@ export default function AlbumPage() {
     }
   }
 
+  // Photo viewer
+  const openViewer = (index: number) => {
+    if (deleteMode) return
+    setViewerPhotos(photos)
+    setViewerIndex(index)
+    setViewerOpen(true)
+  }
+
   const handleDeletePhoto = async (id: number) => {
     const res = await Taro.showModal({ title: '提示', content: '确定删除这张照片吗？' })
     if (!res.confirm) return
-    try { await request('/api/photos/' + id, { method: 'DELETE' }); if (activeAlbum !== null) fetchPhotos(activeAlbum) } catch (e) {}
+    try {
+      await request('/api/photos/' + id, { method: 'DELETE' })
+      if (activeAlbum !== null) fetchPhotos(activeAlbum)
+    } catch (e) {}
   }
 
+  const handleLongPress = (photoId: number) => {
+    Taro.showActionSheet({
+      itemList: ['保存到相册', '删除'],
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          // Save photo - find the photo and download
+          const photo = photos.find(p => p.id === photoId)
+          if (photo) {
+            Taro.downloadFile({
+              url: resolveImageUrl(photo.image_url),
+              success: (downloadRes) => {
+                Taro.saveImageToPhotosAlbum({
+                  filePath: downloadRes.tempFilePath,
+                  success: () => Taro.showToast({ title: '已保存', icon: 'success' }),
+                  fail: () => Taro.showToast({ title: '保存失败', icon: 'none' })
+                })
+              }
+            })
+          }
+        } else if (res.tapIndex === 1) {
+          handleDeletePhoto(photoId)
+        }
+      }
+    })
+  }
+
+  // Photo viewer modal
+  if (viewerOpen) {
+    return (
+      <View className='photo-viewer'>
+        <View className='photo-viewer-header'>
+          <View className='photo-viewer-back' onClick={() => setViewerOpen(false)}>
+            <Text>✕</Text>
+          </View>
+          <Text className='photo-viewer-counter'>{viewerIndex + 1} / {viewerPhotos.length}</Text>
+          <View className='photo-viewer-save' onClick={() => {
+            const photo = viewerPhotos[viewerIndex]
+            if (photo) {
+              Taro.downloadFile({
+                url: resolveImageUrl(photo.image_url),
+                success: (downloadRes) => {
+                  Taro.saveImageToPhotosAlbum({
+                    filePath: downloadRes.tempFilePath,
+                    success: () => Taro.showToast({ title: '已保存', icon: 'success' }),
+                    fail: () => Taro.showToast({ title: '保存失败', icon: 'none' })
+                  })
+                }
+              })
+            }
+          }}>
+            <Text>保存</Text>
+          </View>
+        </View>
+        <View className='photo-viewer-swiper'>
+          <View className='photo-viewer-track' style={{ transform: 'translateX(-' + (viewerIndex * 100) + '%)' }}>
+            {viewerPhotos.map((photo, i) => (
+              <View key={photo.id} className='photo-viewer-slide'
+                onClick={() => setViewerOpen(false)}
+                onTouchStart={() => {}}
+              >
+                <Image
+                  src={resolveImageUrl(photo.image_url)}
+                  mode='aspectFit'
+                  className='photo-viewer-image'
+                />
+              </View>
+            ))}
+          </View>
+        </View>
+        {/* Navigation arrows */}
+        {viewerIndex > 0 && (
+          <View className='photo-viewer-nav photo-viewer-nav-prev' onClick={() => setViewerIndex(viewerIndex - 1)}>
+            <Text>‹</Text>
+          </View>
+        )}
+        {viewerIndex < viewerPhotos.length - 1 && (
+          <View className='photo-viewer-nav photo-viewer-nav-next' onClick={() => setViewerIndex(viewerIndex + 1)}>
+            <Text>›</Text>
+          </View>
+        )}
+        <View className='photo-viewer-hint'>左右滑动切换 · 单击关闭 · 长按保存</View>
+      </View>
+    )
+  }
+
+  // Photo grid (inside album)
   if (activeAlbum !== null) {
     const album = albums.find(a => a.id === activeAlbum)
     return (
       <View className='album-page'>
         <View className='album-photo-header'>
-          <View className='album-back-btn' onClick={() => setActiveAlbum(null)}>
+          <View className='album-back-btn' onClick={() => { setActiveAlbum(null); setDeleteMode(false) }}>
             <Text className='album-back-icon'>←</Text>
           </View>
           <Text className='album-photo-title'>{album?.name}</Text>
-          <View className='album-upload-btn' onClick={() => { setUploadAlbum(activeAlbum); setShowUpload(true) }}>
-            <Text className='album-upload-icon'>+</Text>
+          <View className='album-header-actions'>
+            <View className={'album-header-btn ' + (deleteMode ? 'active' : '')} onClick={() => setDeleteMode(!deleteMode)}>
+              <Text>{deleteMode ? '完成' : '管理'}</Text>
+            </View>
+            <View className='album-header-btn' onClick={() => { setUploadAlbum(activeAlbum); setShowUpload(true) }}>
+              <Text>+</Text>
+            </View>
           </View>
         </View>
+
         {error && <View className='album-error'><Text>{error}</Text></View>}
+
+        {deleteMode && (
+          <View className='album-delete-hint'>
+            <Text>点击照片删除 · 删除后不可恢复</Text>
+          </View>
+        )}
+
         <ScrollView className='album-photo-grid-scroll' scrollY>
           <View className='album-photo-grid'>
             {photos.length === 0 ? (
               <View className='album-empty'><Text>还没有照片</Text></View>
             ) : (
-              photos.map(photo => (
-                <View key={photo.id} className='album-photo-item' onClick={() => handleDeletePhoto(photo.id)}>
+              photos.map((photo, i) => (
+                <View
+                  key={photo.id}
+                  className={'album-photo-item ' + (deleteMode ? 'delete-mode' : '')}
+                  onClick={() => deleteMode ? handleDeletePhoto(photo.id) : openViewer(i)}
+                  onLongPress={() => handleLongPress(photo.id)}
+                >
                   <Image src={resolveImageUrl(photo.image_url)} mode='aspectFill' className='album-photo-img' />
+                  {deleteMode && (
+                    <View className='album-photo-delete-mark'>
+                      <Text>✕</Text>
+                    </View>
+                  )}
                 </View>
               ))
             )}
@@ -124,6 +250,7 @@ export default function AlbumPage() {
     )
   }
 
+  // Album list
   return (
     <View className='album-page'>
       <View className='album-header'>
@@ -143,9 +270,9 @@ export default function AlbumPage() {
           </View>
         ) : albums.length === 0 ? (
           <View className='album-empty'>
-            <Text className='empty-icon'>✨</Text>
+            <Text className='album-empty-icon'>📷</Text>
             <Text>还没有相册</Text>
-            <Text className='empty-sub'>点击右上角创建</Text>
+            <Text className='album-empty-sub'>点击右上角创建</Text>
           </View>
         ) : (
           albums.map(album => (
@@ -165,7 +292,7 @@ export default function AlbumPage() {
                   <Text className='album-action-icon'>✎</Text>
                 </View>
                 <View className='album-action-btn' onClick={() => handleDeleteAlbum(album.id)}>
-                  <Text className='album-action-icon danger'>✖</Text>
+                  <Text className='album-action-icon danger'>✕</Text>
                 </View>
               </View>
             </View>

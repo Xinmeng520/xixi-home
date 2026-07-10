@@ -83,9 +83,9 @@ export default function AnniversaryPage() {
           </View>
         ) : items.length === 0 ? (
           <View className='anniv-empty'>
-            <Text className='empty-icon'>✨</Text>
+            <Text className='anniv-empty-icon'>🎂</Text>
             <Text>还没有纪念日</Text>
-            <Text className='empty-sub'>点击右上角添加</Text>
+            <Text className='anniv-empty-sub'>点击右上角添加</Text>
           </View>
         ) : (
           items.map((item: Anniversary) => (
@@ -106,7 +106,7 @@ export default function AnniversaryPage() {
                   <Text className='anniv-action-icon'>✎</Text>
                 </View>
                 <View className='anniv-action-btn' onClick={() => setDeleteConfirm(item.id)}>
-                  <Text className='anniv-action-icon danger'>✖</Text>
+                  <Text className='anniv-action-icon danger'>✕</Text>
                 </View>
               </View>
             </View>

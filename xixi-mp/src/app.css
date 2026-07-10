@@ -1,10 +1,72 @@
 page {
-  background-color: #fffaf5;
+  --color-primary: #f97316;
+  --color-primary-light: #fb923c;
+  --color-primary-dark: #c2410c;
+  --color-primary-bg: #fff5eb;
+  --color-primary-glow: rgba(251,146,60,0.3);
+  --color-accent: #ec4899;
+  --color-accent-light: #fdf2f8;
+  --color-danger: #ef4444;
+  --color-danger-bg: #fef2f2;
+  --color-text: #1a1a1a;
+  --color-text-secondary: #666;
+  --color-text-muted: #999;
+  --color-text-light: #ccc;
+  --color-bg: #fffaf5;
+  --color-card: #ffffff;
+  --color-border: rgba(251,146,60,0.15);
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-round: 50%;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 20px rgba(251,146,60,0.08);
+  --shadow-lg: 0 8px 32px rgba(251,146,60,0.12);
+  --shadow-float: 0 8px 24px rgba(251,146,60,0.25);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   font-size: 28px;
-  color: #1a1a1a;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 }
 
-view, text {
+view, text, input, textarea, button {
   box-sizing: border-box;
+}
+
+/* Utility classes */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-sm { gap: 12px; }
+.gap-md { gap: 20px; }
+.gap-lg { gap: 30px; }
+.text-center { text-align: center; }
+.flex-1 { flex: 1; min-width: 0; }
+
+/* FAB - Floating Action Button */
+.fab {
+  position: fixed;
+  bottom: 160px;
+  right: 40px;
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-round);
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-float);
+  z-index: 90;
+  transition: transform 0.2s;
+}
+.fab:active {
+  transform: scale(0.92);
+}
+.fab-icon {
+  font-size: 40px;
+  color: #fff;
+  font-weight: 300;
 }

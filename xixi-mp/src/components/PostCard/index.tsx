@@ -66,12 +66,14 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
   }
 
   const handleDelete = async () => {
+    setShowMenu(false)
     const res = await Taro.showModal({ title: '提示', content: '确定删除这条动态吗？' })
     if (!res.confirm) return
     try { await request('/api/posts/' + post.id, { method: 'DELETE' }); onDelete(post.id) } catch (e) {}
   }
 
   const togglePin = async () => {
+    setShowMenu(false)
     try {
       const data = await request<{ is_pinned: number }>('/api/posts/' + post.id + '/pin', { method: 'POST' })
       onTogglePin(post.id, data.is_pinned)
@@ -80,73 +82,87 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
 
   return (
     <View className='post-card'>
-      {post.is_pinned === 1 && <View className='post-pinned'>置顶</View>}
+      {post.is_pinned === 1 && <View className='post-pinned-badge'>置顶</View>}
+
+      {/* Header */}
       <View className='post-header'>
-        <View className='post-avatar'>
+        <View className='post-avatar-wrap'>
           {post.author.avatar
-            ? <Image src={resolveImageUrl(post.author.avatar)} mode='aspectFill' className='avatar-img' />
-            : <Text className='avatar-text'>{post.author.nickname.charAt(0)}</Text>
+            ? <Image src={resolveImageUrl(post.author.avatar)} mode='aspectFill' className='post-avatar' />
+            : <Text className='post-avatar-text'>{post.author.nickname.charAt(0)}</Text>
           }
         </View>
         <View className='post-meta'>
-          <Text className='post-author'>{post.author.nickname}</Text>
+          <Text className='post-author-name'>{post.author.nickname}</Text>
           <Text className='post-time'>{formatTime(post.created_at)}</Text>
         </View>
         {isAuthor && (
-          <View className='post-menu-wrap'>
-            <View className='post-menu-btn' onClick={() => setShowMenu(!showMenu)}>
-              <View className='dot'></View><View className='dot'></View><View className='dot'></View>
+          <View className='post-menu'>
+            <View className='post-menu-trigger' onClick={() => setShowMenu(!showMenu)}>
+              <View className='post-menu-dot'></View>
+              <View className='post-menu-dot'></View>
+              <View className='post-menu-dot'></View>
             </View>
             {showMenu && (
               <View className='post-menu-dropdown'>
-                <View className='menu-item' onClick={() => { setShowMenu(false); Taro.navigateTo({ url: '/pages/edit-post/index?id=' + post.id }) }}>编辑</View>
-                <View className='menu-item' onClick={() => { setShowMenu(false); togglePin() }}>{post.is_pinned === 1 ? '取消置顶' : '置顶'}</View>
-                <View className='menu-item danger' onClick={() => { setShowMenu(false); handleDelete() }}>删除</View>
+                <View className='post-menu-item' onClick={() => { setShowMenu(false); Taro.navigateTo({ url: '/pages/edit-post/index?id=' + post.id }) }}>
+                  <Text>编辑</Text>
+                </View>
+                <View className='post-menu-item' onClick={togglePin}>
+                  <Text>{post.is_pinned === 1 ? '取消置顶' : '置顶'}</Text>
+                </View>
+                <View className='post-menu-item danger' onClick={handleDelete}>
+                  <Text>删除</Text>
+                </View>
               </View>
             )}
           </View>
         )}
       </View>
 
+      {/* Content */}
       {post.content && <Text className='post-content'>{post.content}</Text>}
 
+      {/* Images */}
       {post.images && post.images.length > 0 && (
-        <View className={'post-images img-count-' + (post.images.length === 1 ? '1' : post.images.length === 2 ? '2' : '3')}>
+        <View className={'post-images post-images-' + (post.images.length === 1 ? '1' : post.images.length === 2 ? '2' : '3')}>
           {post.images.slice(0, 9).map((img, i) => (
-            <View key={i} className='post-img-wrap' onClick={() => {
+            <View key={i} className='post-image-item' onClick={() => {
               Taro.previewImage({ urls: post.images.map((x: any) => resolveImageUrl(x.image_url)), current: resolveImageUrl(img.image_url) })
             }}>
-              <Image src={resolveImageUrl(img.image_url)} mode='aspectFill' className='post-img' />
+              <Image src={resolveImageUrl(img.image_url)} mode='aspectFill' className='post-image' />
             </View>
           ))}
         </View>
       )}
 
+      {/* Actions */}
       <View className='post-actions'>
-        <View className={'action-btn ' + (liked ? 'liked' : '')} onClick={toggleLike}>
-          <Text className='action-icon'>{liked ? '❤' : '♡'}</Text>
-          <Text className='action-count'>{likeCount}</Text>
+        <View className={'post-action ' + (liked ? 'liked' : '')} onClick={toggleLike}>
+          <Text className='post-action-icon'>{liked ? '❤️' : '🤍'}</Text>
+          <Text className='post-action-count'>{likeCount}</Text>
         </View>
-        <View className='action-btn' onClick={toggleComments}>
-          <Text className='action-icon'>✉</Text>
-          <Text className='action-count'>{post.comment_count}</Text>
+        <View className='post-action' onClick={toggleComments}>
+          <Text className='post-action-icon'>💬</Text>
+          <Text className='post-action-count'>{post.comment_count}</Text>
         </View>
       </View>
 
+      {/* Comments */}
       {showComments && (
         <View className='post-comments'>
           {comments.length === 0
-            ? <Text className='no-comments'>还没有评论</Text>
+            ? <Text className='post-comments-empty'>还没有评论</Text>
             : comments.map(c => (
-              <View key={c.id} className='comment-item'>
-                <Text className='comment-author'>{c.author.nickname}</Text>
-                <Text className='comment-text'>{c.content}</Text>
+              <View key={c.id} className='post-comment'>
+                <Text className='post-comment-author'>{c.author.nickname}</Text>
+                <Text className='post-comment-text'>{c.content}</Text>
               </View>
             ))
           }
-          <View className='comment-input-row'>
-            <Input className='comment-input' placeholder='写下你的评论...' value={commentText} onInput={e => setCommentText(e.detail.value)} confirm-type='send' onConfirm={submitComment} />
-            <View className='comment-send' onClick={submitComment}>
+          <View className='post-comment-input-row'>
+            <Input className='post-comment-input' placeholder='写下你的评论...' value={commentText} onInput={e => setCommentText(e.detail.value)} confirm-type='send' onConfirm={submitComment} />
+            <View className='post-comment-send' onClick={submitComment}>
               <Text>发送</Text>
             </View>
           </View>

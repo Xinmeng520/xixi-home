@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, Text, Input, Button, Image } from '@tarojs/components'
+import { View, Text, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request } from '../../utils/request'
 import './index.css'
@@ -26,24 +26,37 @@ export default function LoginPage() {
 
   return (
     <View className='login-page'>
-      <View className='login-bg-1'></View>
-      <View className='login-bg-2'></View>
+      <View className='login-decoration login-decoration-1'></View>
+      <View className='login-decoration login-decoration-2'></View>
+
       <View className='login-content'>
         <View className='login-logo'>
-          <View className='login-heart'>
-            <Text className='heart-icon'>❤</Text>
-          </View>
+          <Text className='login-logo-text'>熙</Text>
         </View>
         <Text className='login-title'>熙熙小窝</Text>
         <Text className='login-subtitle'>登录你的小世界</Text>
+
         <View className='login-form'>
-          <Input className='login-input' type='text' placeholder='请输入用户名' value={username} onInput={e => setUsername(e.detail.value)} />
-          <Input className='login-input' password placeholder='请输入密码' value={password} onInput={e => setPassword(e.detail.value)} />
+          <Input
+            className='login-input'
+            type='text'
+            placeholder='请输入用户名'
+            value={username}
+            onInput={e => setUsername(e.detail.value)}
+          />
+          <Input
+            className='login-input'
+            password
+            placeholder='请输入密码'
+            value={password}
+            onInput={e => setPassword(e.detail.value)}
+          />
           {error && <Text className='login-error'>{error}</Text>}
           <Button className='login-btn' loading={loading} onClick={handleLogin}>
             {loading ? '登录中...' : '登 录'}
           </Button>
         </View>
+
         <Text className='login-tip'>默认账号: xixi / 123456</Text>
       </View>
     </View>

@@ -36,14 +36,14 @@ export default function HomePage() {
 
   return (
     <View className='home-page'>
-      {/* Hero Header */}
+      {/* Hero Section */}
       <View className='home-hero'>
-        <View className='home-hero-bg'></View>
+        <View className='home-hero-decoration'></View>
         <View className='home-header-row'>
-          <View className='home-heart-icon'>
-            <Text className='heart-symbol'>❤</Text>
+          <View className='home-logo'>
+            <Text className='home-logo-icon'>熙</Text>
           </View>
-          <View>
+          <View className='home-header-text'>
             <Text className='home-title'>熙熙小窝</Text>
             <Text className='home-subtitle'>Our Little World</Text>
           </View>
@@ -51,31 +51,29 @@ export default function HomePage() {
 
         {homeData && (
           <View className='home-stats'>
-            <View className='home-days-section'>
-              <Text className='home-label-sm'>Together For</Text>
-              <Text className='home-days-num'>{homeData.days_together}</Text>
-              <Text className='home-days-unit'>天 · 在一起</Text>
+            <View className='home-stat-item'>
+              <Text className='home-stat-label'>Together For</Text>
+              <Text className='home-stat-num'>{homeData.days_together}</Text>
+              <Text className='home-stat-unit'>天 · 在一起</Text>
             </View>
-
-            <View className='home-divider'>
-              <View className='home-divider-line'></View>
-              <View className='home-divider-dot'></View>
-              <View className='home-divider-line'></View>
+            <View className='home-stat-divider'>
+              <View className='home-stat-divider-line'></View>
+              <View className='home-stat-divider-dot'></View>
+              <View className='home-stat-divider-line'></View>
             </View>
-
-            <View className='home-anniv-section'>
-              <Text className='home-label-sm'>Next Chapter</Text>
-              <Text className='home-anniv-title'>{homeData.next_anniversary ? homeData.next_anniversary.title : '纪念日'}</Text>
-              <View className='home-anniv-days-row'>
-                <Text className='home-anniv-days'>{homeData.next_anniversary ? homeData.next_anniversary.days_left : 0}</Text>
-                <Text className='home-anniv-unit'>天</Text>
+            <View className='home-stat-item'>
+              <Text className='home-stat-label'>Next Chapter</Text>
+              <Text className='home-stat-anniv'>{homeData.next_anniversary ? homeData.next_anniversary.title : '纪念日'}</Text>
+              <View className='home-stat-days-row'>
+                <Text className='home-stat-days'>{homeData.next_anniversary ? homeData.next_anniversary.days_left : 0}</Text>
+                <Text className='home-stat-days-unit'>天</Text>
               </View>
             </View>
           </View>
         )}
       </View>
 
-      {/* Posts */}
+      {/* Posts Feed */}
       <View className='home-posts'>
         {error && (
           <View className='home-error'>
@@ -86,16 +84,22 @@ export default function HomePage() {
         {loading ? (
           <View className='home-skeleton'>
             <View className='skeleton-card'><View className='skeleton-avatar' /><View className='skeleton-lines'><View className='skeleton-line' /><View className='skeleton-line short' /></View></View>
+            <View className='skeleton-card'><View className='skeleton-avatar' /><View className='skeleton-lines'><View className='skeleton-line' /><View className='skeleton-line short' /></View></View>
           </View>
         ) : posts.length === 0 ? (
           <View className='home-empty'>
-            <Text className='empty-icon'>✨</Text>
-            <Text>暂无动态</Text>
-            <Text className='empty-sub'>发第一条动态记录美好吧</Text>
+            <Text className='home-empty-icon'>📝</Text>
+            <Text className='home-empty-title'>还没有动态</Text>
+            <Text className='home-empty-sub'>点击右下角按钮，记录美好时光</Text>
           </View>
         ) : (
           posts.map(post => <PostCard key={post.id} post={post} currentUser={currentUser} onDelete={handleDelete} onTogglePin={handleTogglePin} />)
         )}
+      </View>
+
+      {/* FAB - New Post Button */}
+      <View className='fab' onClick={() => Taro.navigateTo({ url: '/pages/compose/index' })}>
+        <Text className='fab-icon'>+</Text>
       </View>
     </View>
   )

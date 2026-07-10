@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
-import { View, Text, Image, Input, Button } from '@tarojs/components'
+import { View, Text, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { request, uploadFile, uploadRawFile, resolveImageUrl } from '../../utils/request'
+import { request, uploadRawFile, resolveImageUrl } from '../../utils/request'
 import { User } from '../../utils/types'
 import './index.css'
 
@@ -84,22 +84,24 @@ export default function ProfilePage() {
     <View className='profile-page'>
       {error && <View className='profile-error'><Text>{error}</Text></View>}
 
+      {/* Hero */}
       <View className='profile-hero'>
-        <View className='profile-avatar-wrap'>
-          <View className='profile-avatar' onClick={handleUploadAvatar}>
+        <View className='profile-avatar-wrap' onClick={handleUploadAvatar}>
+          <View className='profile-avatar'>
             {user?.avatar
-              ? <Image src={resolveImageUrl(user.avatar)} mode='aspectFill' className='avatar-img' />
-              : <Text className='avatar-text'>{user?.nickname?.charAt(0) || '?'}</Text>
+              ? <Image src={resolveImageUrl(user.avatar)} mode='aspectFill' className='profile-avatar-img' />
+              : <Text className='profile-avatar-text'>{user?.nickname?.charAt(0) || '?'}</Text>
             }
           </View>
-          <View className='profile-avatar-edit'>
-            <Text className='avatar-edit-icon'>📸</Text>
+          <View className='profile-avatar-badge'>
+            <Text>📷</Text>
           </View>
         </View>
         <Text className='profile-name'>{user?.nickname}</Text>
         <Text className='profile-username'>@{user?.username}</Text>
       </View>
 
+      {/* Info Section */}
       <View className='profile-section'>
         <Text className='profile-section-title'>个人信息</Text>
         <View className='profile-field'>
@@ -108,7 +110,7 @@ export default function ProfilePage() {
             <View className='profile-field-row'>
               <Text className='profile-field-value'>{user?.nickname}</Text>
               <View className='profile-edit-btn' onClick={handleEdit}>
-                <Text className='profile-edit-icon'>✎</Text>
+                <Text>编辑</Text>
               </View>
             </View>
           ) : (
@@ -117,7 +119,7 @@ export default function ProfilePage() {
               <View className='profile-form-actions'>
                 <View className='profile-btn-cancel' onClick={() => setEditMode(false)}><Text>取消</Text></View>
                 <View className={'profile-btn-save ' + (submitting ? 'disabled' : '')} onClick={handleSaveProfile}>
-                  <Text>{submitting ? '保存中...' : '保存'}</Text>
+                  <Text>{submitting ? '保存中' : '保存'}</Text>
                 </View>
               </View>
             </View>
@@ -125,17 +127,19 @@ export default function ProfilePage() {
         </View>
       </View>
 
+      {/* Password Section */}
       <View className='profile-section'>
         <Text className='profile-section-title'>修改密码</Text>
         <View className='profile-field'>
           <Input className='profile-input' password placeholder='旧密码' value={oldPassword} onInput={e => setOldPassword(e.detail.value)} />
           <Input className='profile-input' password placeholder='新密码' value={newPassword} onInput={e => setNewPassword(e.detail.value)} />
-          <View className='profile-btn-save full' onClick={handleChangePassword}>
-            <Text>{submitting ? '保存中...' : '修改密码'}</Text>
+          <View className={'profile-btn-save full ' + (submitting ? 'disabled' : '')} onClick={handleChangePassword}>
+            <Text>{submitting ? '保存中' : '修改密码'}</Text>
           </View>
         </View>
       </View>
 
+      {/* Logout */}
       <View className='profile-section'>
         <View className='profile-logout-btn' onClick={handleLogout}>
           <Text>退出登录</Text>
