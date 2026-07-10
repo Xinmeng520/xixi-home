@@ -1,8 +1,7 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { View, Text, Input, Textarea, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request, uploadFile } from '../../utils/request'
-import './index.css'
 
 export default function ComposePage() {
   const [title, setTitle] = useState('')
@@ -44,24 +43,24 @@ export default function ComposePage() {
     <View className='compose-page'>
       <View className='compose-nav'>
         <Text className='compose-cancel' onClick={() => Taro.navigateBack()}>取消</Text>
-        <Text className='compose-title-text'>记录我们的点点滴�?/Text>
-        <Text className='compose-submit' onClick={handleSubmit}>{submitting ? '发布�? : '发布'}</Text>
+        <Text className='compose-title-text'>记录我们的点点滴滴</Text>
+        <Text className='compose-submit' onClick={handleSubmit}>{submitting ? '发布中' : '发布'}</Text>
       </View>
       {error && <Text className='compose-error'>{error}</Text>}
       <View className='compose-card'>
         <Input className='compose-input' placeholder='标题（可选）' value={title} onInput={e => setTitle(e.detail.value)} />
-        <Textarea className='compose-textarea' placeholder='此刻的想�?..' value={content} onInput={e => setContent(e.detail.value)} autoHeight />
+        <Textarea className='compose-textarea' placeholder='此刻的想法...' value={content} onInput={e => setContent(e.detail.value)} autoHeight />
         {files.length > 0 && (
           <View className='compose-images'>
             {files.map((f, i) => (
-              <View key={i} className='compose-img-wrap'><Image src={f} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => removeFile(i)}>�?/View></View>
+              <View key={i} className='compose-img-wrap'><Image src={f} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => removeFile(i)}>✖</View></View>
             ))}
           </View>
         )}
       </View>
       <View className='compose-toolbar'>
         <View className='toolbar-btn' onClick={chooseImages}><Text>🖼</Text><Text className='toolbar-label'>图片</Text></View>
-        <View className={'toolbar-btn ' + (isPinned ? 'active' : '')} onClick={() => setIsPinned(!isPinned)}><Text>📌</Text><Text className='toolbar-label'>{isPinned ? '已置�? : '置顶'}</Text></View>
+        <View className={'toolbar-btn ' + (isPinned ? 'active' : '')} onClick={() => setIsPinned(!isPinned)}><Text>📌</Text><Text className='toolbar-label'>{isPinned ? '已置顶' : '置顶'}</Text></View>
       </View>
     </View>
   )

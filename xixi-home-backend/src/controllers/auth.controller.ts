@@ -1,4 +1,7 @@
 ﻿import { Response } from "express";
+import path from "path";
+import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 import { AuthRequest } from "../types/index.js";
 import * as authService from "../services/auth.service.js";
 import { success, fail } from "../utils/response.js";
@@ -44,6 +47,39 @@ export async function uploadAvatar(req: AuthRequest, res: Response) {
   try {
     if (!req.file) return fail(res, 1, "请选择头像图片");
     const avatarUrl = "/uploads/" + getRelPath(req.file.path);
+    const user = await authService.updateProfile(req.user!.userId, { avatar: avatarUrl });
+    success(res, { avatar: avatarUrl, user }, "头像上传成功");
+  } catch (err) {
+    fail(res, 1, (err as Error).message);
+  }
+}
+
+
+export async function uploadAvatarBase64(req: AuthRequest, res: Response) {
+  try {
+    const { image } = req.body;
+    if (!image) return fail(res, 1, "请提供图片数据");
+
+    const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+    const buffer = Buffer.from(base64Data, "base64");
+
+    if (buffer.length > 5 * 1024 * 1024) {
+      return fail(res, 1, "图片过大，最大支持5MB");
+    }
+
+    let ext = ".jpg";
+    if (image.startsWith("data:image/png")) ext = ".png";
+    else if (image.startsWith("data:image/gif")) ext = ".gif";
+    else if (image.startsWith("data:image/webp")) ext = ".webp";
+
+    const dateDir = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const dir = path.join(env.upload.dir, "avatars", dateDir);
+    fs.mkdirSync(dir, { recursive: true });
+    const filename = uuidv4() + ext;
+    const filePath = path.join(dir, filename);
+    fs.writeFileSync(filePath, buffer);
+
+    const avatarUrl = "/uploads/avatars/" + dateDir + "/" + filename;
     const user = await authService.updateProfile(req.user!.userId, { avatar: avatarUrl });
     success(res, { avatar: avatarUrl, user }, "头像上传成功");
   } catch (err) {
