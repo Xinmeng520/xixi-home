@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { request, uploadFile } from '../../utils/request'
+import { request, uploadFile, resolveImageUrl } from '../../utils/request'
 import { Album, Photo } from '../../utils/types'
 import './index.css'
 
@@ -101,7 +101,7 @@ export default function AlbumPage() {
             ) : (
               photos.map(photo => (
                 <View key={photo.id} className='album-photo-item' onClick={() => handleDeletePhoto(photo.id)}>
-                  <Image src={photo.image_url} mode='aspectFill' className='album-photo-img' />
+                  <Image src={resolveImageUrl(photo.image_url)} mode='aspectFill' className='album-photo-img' />
                 </View>
               ))
             )}
@@ -152,7 +152,7 @@ export default function AlbumPage() {
             <View key={album.id} className='album-card' onClick={() => setActiveAlbum(album.id)}>
               <View className='album-cover'>
                 {album.cover_url
-                  ? <Image src={album.cover_url} mode='aspectFill' className='album-cover-img' />
+                  ? <Image src={resolveImageUrl(album.cover_url)} mode='aspectFill' className='album-cover-img' />
                   : <View className='album-cover-placeholder'><Text>🖼</Text></View>
                 }
               </View>

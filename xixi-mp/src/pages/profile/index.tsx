@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Image, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { request, uploadFile, uploadRawFile } from '../../utils/request'
+import { request, uploadFile, uploadRawFile, resolveImageUrl } from '../../utils/request'
 import { User } from '../../utils/types'
 import './index.css'
 
@@ -88,7 +88,7 @@ export default function ProfilePage() {
         <View className='profile-avatar-wrap'>
           <View className='profile-avatar' onClick={handleUploadAvatar}>
             {user?.avatar
-              ? <Image src={user.avatar} mode='aspectFill' className='avatar-img' />
+              ? <Image src={resolveImageUrl(user.avatar)} mode='aspectFill' className='avatar-img' />
               : <Text className='avatar-text'>{user?.nickname?.charAt(0) || '?'}</Text>
             }
           </View>

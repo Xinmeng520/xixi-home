@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { request } from '../../utils/request'
+import { request, resolveImageUrl } from '../../utils/request'
 import { HomeData, Post } from '../../utils/types'
 import PostCard from '../../components/PostCard'
 import './index.css'

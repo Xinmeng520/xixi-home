@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { request } from '../../utils/request'
+import { request, resolveImageUrl } from '../../utils/request'
 import { Post } from '../../utils/types'
 import './index.css'
 
@@ -84,7 +84,7 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
       <View className='post-header'>
         <View className='post-avatar'>
           {post.author.avatar
-            ? <Image src={post.author.avatar} mode='aspectFill' className='avatar-img' />
+            ? <Image src={resolveImageUrl(post.author.avatar)} mode='aspectFill' className='avatar-img' />
             : <Text className='avatar-text'>{post.author.nickname.charAt(0)}</Text>
           }
         </View>
@@ -114,9 +114,9 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
         <View className={'post-images img-count-' + (post.images.length === 1 ? '1' : post.images.length === 2 ? '2' : '3')}>
           {post.images.slice(0, 9).map((img, i) => (
             <View key={i} className='post-img-wrap' onClick={() => {
-              Taro.previewImage({ urls: post.images.map((x: any) => x.image_url), current: img.image_url })
+              Taro.previewImage({ urls: post.images.map((x: any) => resolveImageUrl(x.image_url)), current: resolveImageUrl(img.image_url) })
             }}>
-              <Image src={img.image_url} mode='aspectFill' className='post-img' />
+              <Image src={resolveImageUrl(img.image_url)} mode='aspectFill' className='post-img' />
             </View>
           ))}
         </View>

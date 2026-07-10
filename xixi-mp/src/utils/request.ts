@@ -1,6 +1,12 @@
 ﻿import Taro from '@tarojs/taro'
 
 const API_BASE = 'http://192.168.110.119:3000'
+export function resolveImageUrl(url: string | undefined | null): string {
+  if (!url) return ''
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url
+  return API_BASE + url
+}
+
 
 interface RequestOptions {
   method?: string
