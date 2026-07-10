@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState, useCallback } from 'react'
-import { View, Text, Image, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { request, resolveImageUrl } from '../../utils/request'
+import { request } from '../../utils/request'
 import { HomeData, Post } from '../../utils/types'
 import PostCard from '../../components/PostCard'
 import Icon from '../../components/Icon'
@@ -33,26 +33,24 @@ export default function HomePage() {
     setPosts(prev => prev.map(p => p.id === id ? { ...p, is_pinned: isPinned } : p).sort((a, b) => b.is_pinned - a.is_pinned))
   }
 
-  const onPullDownRefresh = async () => { await fetchData(); Taro.stopPullDownRefresh() }
-
   return (
     <View className='home-page'>
-      {/* Hero Section */}
+      {/* Literary Header */}
       <View className='home-hero'>
-        <View className='home-hero-decoration'></View>
+        <View className='home-hero-bg'></View>
         <View className='home-header-row'>
           <View className='home-logo'>
-            <Icon name='logo' size={36} color='#fff' />
+            <Icon name='logo' size={28} color='#fff' />
           </View>
-          <View className='home-header-text'>
+          <View>
             <Text className='home-title'>熙熙小窝</Text>
             <Text className='home-subtitle'>Our Little World</Text>
           </View>
         </View>
 
         {homeData && (
-          <View className='home-stats'>
-            <View className='home-stat-item'>
+          <View className='home-stats-card'>
+            <View className='home-stat-left'>
               <Text className='home-stat-label'>Together For</Text>
               <Text className='home-stat-num'>{homeData.days_together}</Text>
               <Text className='home-stat-unit'>天 · 在一起</Text>
@@ -62,7 +60,7 @@ export default function HomePage() {
               <View className='home-stat-divider-dot'></View>
               <View className='home-stat-divider-line'></View>
             </View>
-            <View className='home-stat-item'>
+            <View className='home-stat-right'>
               <Text className='home-stat-label'>Next Chapter</Text>
               <Text className='home-stat-anniv'>{homeData.next_anniversary ? homeData.next_anniversary.title : '纪念日'}</Text>
               <View className='home-stat-days-row'>
@@ -78,29 +76,41 @@ export default function HomePage() {
       <View className='home-posts'>
         {error && (
           <View className='home-error'>
-            <Text>{error}</Text>
+            <Text className='home-error-text'>{error}</Text>
             <Text className='home-retry' onClick={() => fetchData()}>重试</Text>
           </View>
         )}
         {loading ? (
           <View className='home-skeleton'>
-            <View className='skeleton-card'><View className='skeleton-avatar' /><View className='skeleton-lines'><View className='skeleton-line' /><View className='skeleton-line short' /></View></View>
-            <View className='skeleton-card'><View className='skeleton-avatar' /><View className='skeleton-lines'><View className='skeleton-line' /><View className='skeleton-line short' /></View></View>
+            <View className='skeleton-card'>
+              <View className='skeleton-avatar' />
+              <View className='skeleton-lines'>
+                <View className='skeleton-line' />
+                <View className='skeleton-line short' />
+              </View>
+            </View>
+            <View className='skeleton-card'>
+              <View className='skeleton-avatar' />
+              <View className='skeleton-lines'>
+                <View className='skeleton-line' />
+                <View className='skeleton-line short' />
+              </View>
+            </View>
           </View>
         ) : posts.length === 0 ? (
           <View className='home-empty'>
-            <View className='home-empty-icon-wrap'>
-              <Icon name='image' size={48} color='#ccc' />
+            <View className='home-empty-icon'>
+              <Icon name='image' size={40} color='#fdba74' />
             </View>
-            <Text className='home-empty-title'>还没有动态</Text>
-            <Text className='home-empty-sub'>点击右下角按钮，记录美好时光</Text>
+            <Text className='home-empty-title'>暂无动态</Text>
+            <Text className='home-empty-sub'>发第一条动态记录美好吧</Text>
           </View>
         ) : (
           posts.map(post => <PostCard key={post.id} post={post} currentUser={currentUser} onDelete={handleDelete} onTogglePin={handleTogglePin} />)
         )}
       </View>
 
-      {/* FAB - New Post Button */}
+      {/* FAB */}
       <View className='fab' onClick={() => Taro.navigateTo({ url: '/pages/compose/index' })}>
         <Icon name='add' size={32} color='#fff' />
       </View>

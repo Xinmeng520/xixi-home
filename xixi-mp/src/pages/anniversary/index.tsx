@@ -11,6 +11,11 @@ function formatDate(dateStr: string): string {
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')
 }
 
+function formatDateDisplay(dateStr: string): string {
+  const d = new Date(dateStr)
+  return (d.getMonth() + 1) + '月' + d.getDate() + '日'
+}
+
 export default function AnniversaryPage() {
   const [items, setItems] = useState<Anniversary[]>([])
   const [loading, setLoading] = useState(true)
@@ -97,7 +102,7 @@ export default function AnniversaryPage() {
                 <View className='anniv-card-text'>
                   <Text className='anniv-card-title'>{item.title}</Text>
                   {item.is_recurring === 1 && <Text className='anniv-card-badge'>每年</Text>}
-                  <Text className='anniv-card-date'>{formatDate(item.date)}</Text>
+                  <Text className='anniv-card-date'>{formatDateDisplay(item.date)}</Text>
                 </View>
                 <View className='anniv-card-countdown'>
                   <Text className='anniv-days'>{calcDaysLeft(item)}</Text>
@@ -106,10 +111,10 @@ export default function AnniversaryPage() {
               </View>
               <View className='anniv-card-actions'>
                 <View className='anniv-action-btn' onClick={() => openEdit(item)}>
-                  <Icon name='edit' size={20} color='#f97316' />
+                  <Icon name='edit' size={18} color='#f97316' />
                 </View>
                 <View className='anniv-action-btn danger' onClick={() => setDeleteConfirm(item.id)}>
-                  <Icon name='delete' size={20} color='#ef4444' />
+                  <Icon name='delete' size={18} color='#ef4444' />
                 </View>
               </View>
             </View>
@@ -119,14 +124,14 @@ export default function AnniversaryPage() {
 
       {showForm && (
         <View className='anniv-modal-overlay' onClick={() => setShowForm(false)}>
-          <View className='anniv-modal' onClick={(e: any) => e.stopPropagation()}>
+          <View className='anniv-modal' onClick={() => {}}>
             <View className='anniv-modal-handle'></View>
             <Text className='anniv-modal-title'>{editing ? '编辑纪念日' : '新增纪念日'}</Text>
             <View className='anniv-form'>
               <Text className='anniv-label'>标题</Text>
-              <Input className='anniv-input' placeholder='如：确定关系日' value={formTitle} onInput={e => setFormTitle(e.detail.value)} />
+              <Input className='anniv-input' placeholder='如：确定关系日' value={formTitle} onInput={(e: any) => setFormTitle(e.detail.value)} />
               <Text className='anniv-label'>日期</Text>
-              <Input className='anniv-input' type='date' value={formDate} onInput={e => setFormDate(e.detail.value)} />
+              <Input className='anniv-input' type='date' value={formDate} onInput={(e: any) => setFormDate(e.detail.value)} />
               <View className='anniv-toggle-row'>
                 <Text className='anniv-label'>每年重复</Text>
                 <View className={'anniv-toggle ' + (formRecurring === 1 ? 'on' : '')} onClick={() => setFormRecurring(formRecurring === 1 ? 0 : 1)}>
@@ -146,7 +151,7 @@ export default function AnniversaryPage() {
 
       {deleteConfirm !== null && (
         <View className='anniv-modal-overlay' onClick={() => setDeleteConfirm(null)}>
-          <View className='anniv-confirm' onClick={(e: any) => e.stopPropagation()}>
+          <View className='anniv-confirm' onClick={() => {}}>
             <Text className='anniv-confirm-title'>确认删除</Text>
             <Text className='anniv-confirm-text'>删除后无法恢复</Text>
             <View className='anniv-confirm-actions'>

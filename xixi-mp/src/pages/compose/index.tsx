@@ -49,9 +49,9 @@ export default function ComposePage() {
       {/* Nav Bar */}
       <View className='compose-nav'>
         <Text className='compose-nav-btn compose-cancel' onClick={() => Taro.navigateBack()}>取消</Text>
-        <Text className='compose-nav-title'>记录时光</Text>
+        <Text className='compose-nav-title'>记录我们的点点滴滴</Text>
         <Text className={'compose-nav-btn compose-submit ' + (submitting ? 'disabled' : '')} onClick={handleSubmit}>
-          {submitting ? '发布中' : '发布'}
+          {submitting ? '发布中...' : '发布'}
         </Text>
       </View>
 
@@ -63,48 +63,55 @@ export default function ComposePage() {
           className='compose-title-input'
           placeholder='标题（可选）'
           value={title}
-          onInput={e => setTitle(e.detail.value)}
+          onInput={(e: any) => setTitle(e.detail.value)}
           maxlength={50}
         />
         <Textarea
           className='compose-content-input'
           placeholder='此刻的想法...'
           value={content}
-          onInput={e => setContent(e.detail.value)}
+          onInput={(e: any) => setContent(e.detail.value)}
           autoHeight
           maxlength={2000}
         />
       </View>
 
       {/* Image Grid */}
-      <View className='compose-images-section'>
-        <View className='compose-images-grid'>
-          {files.map((f, i) => (
-            <View key={i} className='compose-image-item'>
-              <Image src={f} mode='aspectFill' className='compose-image' />
-              <View className='compose-image-remove' onClick={() => removeFile(i)}>
-                <Icon name='close' size={16} color='#fff' />
+      {files.length > 0 && (
+        <View className='compose-images-section'>
+          <View className='compose-images-grid'>
+            {files.map((f, i) => (
+              <View key={i} className='compose-image-item'>
+                <Image src={f} mode='aspectFill' className='compose-image' />
+                <View className='compose-image-remove' onClick={() => removeFile(i)}>
+                  <Icon name='close' size={14} color='#fff' />
+                </View>
               </View>
-            </View>
-          ))}
-          {files.length < 9 && (
-            <View className='compose-image-add' onClick={chooseImages}>
-              <Icon name='add' size={32} color='#ccc' />
-              <Text className='compose-image-add-text'>图片</Text>
-            </View>
-          )}
+            ))}
+          </View>
         </View>
-      </View>
+      )}
+
+      {/* Add Image Button */}
+      {files.length < 9 && (
+        <View className='compose-add-section' onClick={chooseImages}>
+          <Icon name='add' size={28} color='#ccc' />
+          <Text className='compose-add-text'>添加图片</Text>
+          <Text className='compose-add-count'>{files.length}/9</Text>
+        </View>
+      )}
 
       {/* Toolbar */}
       <View className='compose-toolbar'>
-        <View className='compose-toolbar-btn' onClick={chooseImages}>
-          <Icon name='image' size={22} color='#f97316' />
-          <Text className='compose-toolbar-label'>图片</Text>
-        </View>
-        <View className={'compose-toolbar-btn ' + (isPinned ? 'active' : '')} onClick={() => setIsPinned(!isPinned)}>
-          <Icon name='pin' size={22} color={isPinned ? '#f97316' : '#999'} />
-          <Text className='compose-toolbar-label'>{isPinned ? '已置顶' : '置顶'}</Text>
+        <View className='compose-toolbar-inner'>
+          <View className='compose-toolbar-btn' onClick={chooseImages}>
+            <Icon name='image' size={20} color='#f97316' />
+            <Text className='compose-toolbar-label'>图片</Text>
+          </View>
+          <View className={'compose-toolbar-btn ' + (isPinned ? 'active' : '')} onClick={() => setIsPinned(!isPinned)}>
+            <Icon name='pin' size={20} color={isPinned ? '#f97316' : '#999'} />
+            <Text className='compose-toolbar-label'>{isPinned ? '已置顶' : '置顶'}</Text>
+          </View>
         </View>
       </View>
     </View>

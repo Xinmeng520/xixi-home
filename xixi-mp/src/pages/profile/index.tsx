@@ -27,7 +27,18 @@ export default function ProfilePage() {
 
   useEffect(() => { fetchProfile() }, [fetchProfile])
 
-  const handleEdit = () => { setNickname(user?.nickname || ''); setOldPassword(''); setNewPassword(''); setEditMode(true) }
+  const handleEdit = () => {
+    setNickname(user?.nickname || '')
+    setOldPassword('')
+    setNewPassword('')
+    setEditMode(true)
+  }
+
+  const handleCancelEdit = () => {
+    setEditMode(false)
+    setOldPassword('')
+    setNewPassword('')
+  }
 
   const handleSaveProfile = async () => {
     if (!nickname.trim()) return
@@ -85,64 +96,87 @@ export default function ProfilePage() {
     <View className='profile-page'>
       {error && <View className='profile-error'><Text>{error}</Text></View>}
 
-      {/* Hero */}
-      <View className='profile-hero'>
-        <View className='profile-avatar-wrap' onClick={handleUploadAvatar}>
-          <View className='profile-avatar'>
-            {user?.avatar
-              ? <Image src={resolveImageUrl(user.avatar)} mode='aspectFill' className='profile-avatar-img' />
-              : <Text className='profile-avatar-text'>{user?.nickname?.charAt(0) || '?'}</Text>
-            }
-          </View>
-          <View className='profile-avatar-badge'>
-            <Icon name='camera' size={18} color='#fff' />
-          </View>
-        </View>
-        <Text className='profile-name'>{user?.nickname}</Text>
-        <Text className='profile-username'>@{user?.username}</Text>
+      {/* Header */}
+      <View className='profile-header'>
+        <Text className='profile-title'>我的</Text>
       </View>
 
-      {/* Info Section */}
-      <View className='profile-section'>
-        <Text className='profile-section-title'>个人信息</Text>
-        <View className='profile-field'>
-          <Text className='profile-field-label'>显示名称</Text>
-          {!editMode ? (
-            <View className='profile-field-row'>
-              <Text className='profile-field-value'>{user?.nickname}</Text>
-              <View className='profile-edit-btn' onClick={handleEdit}>
-                <Icon name='edit' size={16} color='#f97316' />
-                <Text className='profile-edit-btn-text'>编辑</Text>
-              </View>
+      {/* Profile card */}
+      <View className='profile-card'>
+        <View className='profile-info-row'>
+          <View className='profile-avatar-wrap' onClick={handleUploadAvatar}>
+            <View className='profile-avatar'>
+              {user?.avatar
+                ? <Image src={resolveImageUrl(user.avatar)} mode='aspectFill' className='profile-avatar-img' />
+                : <Text className='profile-avatar-text'>{user?.nickname?.charAt(0) || '?'}</Text>
+              }
             </View>
-          ) : (
-            <View className='profile-edit-form'>
-              <Input className='profile-input' placeholder='显示名称' value={nickname} onInput={e => setNickname(e.detail.value)} />
-              <View className='profile-form-actions'>
-                <View className='profile-btn-cancel' onClick={() => setEditMode(false)}><Text>取消</Text></View>
-                <View className={'profile-btn-save ' + (submitting ? 'disabled' : '')} onClick={handleSaveProfile}>
-                  <Text>{submitting ? '保存中' : '保存'}</Text>
+            <View className='profile-avatar-badge'>
+              <Icon name='camera' size={18} color='#fff' />
+            </View>
+          </View>
+          <View className='profile-name-section'>
+            {!editMode ? (
+              <View className='profile-name-row'>
+                <Text className='profile-name'>{user?.nickname}</Text>
+                <View className='profile-edit-btn' onClick={handleEdit}>
+                  <Icon name='edit' size={16} color='#f97316' />
+                  <Text className='profile-edit-btn-text'>编辑</Text>
                 </View>
               </View>
+            ) : (
+              <View className='profile-edit-row'>
+                <Input className='profile-name-input' placeholder='昵称' value={nickname} onInput={e => setNickname(e.detail.value)} />
+              </View>
+            )}
+            <Text className='profile-username'>@{user?.username}</Text>
+          </View>
+        </View>
+
+        {editMode && (
+          <View className='profile-edit-actions'>
+            <View className='profile-btn-cancel' onClick={handleCancelEdit}><Text>取消</Text></View>
+            <View className={'profile-btn-save ' + (submitting ? 'disabled' : '')} onClick={handleSaveProfile}>
+              <Text>{submitting ? '保存中' : '保存'}</Text>
             </View>
-          )}
+          </View>
+        )}
+      </View>
+
+      {/* Info section */}
+      <View className='profile-section'>
+        <View className='profile-info-item'>
+          <Text className='profile-info-label'>用户ID</Text>
+          <Text className='profile-info-value'>{user?.id}</Text>
+        </View>
+        <View className='profile-info-divider' />
+        <View className='profile-info-item'>
+          <Text className='profile-info-label'>用户名</Text>
+          <Text className='profile-info-value'>{user?.username}</Text>
+        </View>
+        <View className='profile-info-divider' />
+        <View className='profile-info-item'>
+          <Text className='profile-info-label'>昵称</Text>
+          <Text className='profile-info-value'>{user?.nickname}</Text>
         </View>
       </View>
 
       {/* Password Section */}
       <View className='profile-section'>
         <Text className='profile-section-title'>修改密码</Text>
-        <View className='profile-field'>
+        <View className='profile-field' style={{ marginBottom: '12px' }}>
           <Input className='profile-input' password placeholder='旧密码' value={oldPassword} onInput={e => setOldPassword(e.detail.value)} />
+        </View>
+        <View className='profile-field' style={{ marginBottom: '16px' }}>
           <Input className='profile-input' password placeholder='新密码' value={newPassword} onInput={e => setNewPassword(e.detail.value)} />
-          <View className={'profile-btn-save full ' + (submitting ? 'disabled' : '')} onClick={handleChangePassword}>
-            <Text>{submitting ? '保存中' : '修改密码'}</Text>
-          </View>
+        </View>
+        <View className={'profile-btn-save full ' + (submitting ? 'disabled' : '')} onClick={handleChangePassword}>
+          <Text>{submitting ? '保存中' : '修改密码'}</Text>
         </View>
       </View>
 
       {/* Logout */}
-      <View className='profile-section'>
+      <View className='profile-logout-wrap'>
         <View className='profile-logout-btn' onClick={handleLogout}>
           <Icon name='logout' size={20} color='#ef4444' />
           <Text className='profile-logout-text'>退出登录</Text>

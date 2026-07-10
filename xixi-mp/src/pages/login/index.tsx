@@ -27,12 +27,13 @@ export default function LoginPage() {
 
   return (
     <View className='login-page'>
+      {/* Decorative background circles */}
       <View className='login-decoration login-decoration-1'></View>
       <View className='login-decoration login-decoration-2'></View>
 
       <View className='login-content'>
         <View className='login-logo'>
-          <Icon name='logo' size={50} color='#fff' />
+          <Icon name='logo' size={40} color='#fff' />
         </View>
         <Text className='login-title'>熙熙小窝</Text>
         <Text className='login-subtitle'>登录你的小世界</Text>
@@ -43,14 +44,14 @@ export default function LoginPage() {
             type='text'
             placeholder='请输入用户名'
             value={username}
-            onInput={e => setUsername(e.detail.value)}
+            onInput={(e: any) => setUsername(e.detail.value)}
           />
           <Input
             className='login-input'
             password
             placeholder='请输入密码'
             value={password}
-            onInput={e => setPassword(e.detail.value)}
+            onInput={(e: any) => setPassword(e.detail.value)}
           />
           {error && <Text className='login-error'>{error}</Text>}
           <Button className='login-btn' loading={loading} onClick={handleLogin}>

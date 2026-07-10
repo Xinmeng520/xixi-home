@@ -123,7 +123,7 @@ export default function AlbumPage() {
     })
   }
 
-  // Photo viewer
+  // Photo viewer full screen
   if (viewerOpen) {
     const currentPhoto = viewerPhotos[viewerIndex]
     const hasPrev = viewerIndex > 0
@@ -131,23 +131,22 @@ export default function AlbumPage() {
     return (
       <View className='photo-viewer'>
         <View className='photo-viewer-header'>
-          <View className='photo-viewer-back' onClick={() => setViewerOpen(false)}>
-            <Icon name='back' size={24} color='#fff' />
+          <View className='photo-viewer-close' onClick={() => setViewerOpen(false)}>
+            <Icon name='close' size={24} color='#fff' />
           </View>
-          <Text className='photo-viewer-counter'>{viewerIndex + 1}/{viewerPhotos.length}</Text>
+          <Text className='photo-viewer-counter'>{viewerIndex + 1} / {viewerPhotos.length}</Text>
           <View className='photo-viewer-save' onClick={() => {
-            if (currentPhoto) {
-              Taro.downloadFile({
-                url: resolveImageUrl(currentPhoto.image_url),
-                success: (downloadRes) => {
-                  Taro.saveImageToPhotosAlbum({
-                    filePath: downloadRes.tempFilePath,
-                    success: () => Taro.showToast({ title: '已保存', icon: 'success' }),
-                    fail: () => Taro.showToast({ title: '保存失败', icon: 'none' })
-                  })
-                }
-              })
-            }
+            if (!currentPhoto) return
+            Taro.downloadFile({
+              url: resolveImageUrl(currentPhoto.image_url),
+              success: (downloadRes) => {
+                Taro.saveImageToPhotosAlbum({
+                  filePath: downloadRes.tempFilePath,
+                  success: () => Taro.showToast({ title: '已保存', icon: 'success' }),
+                  fail: () => Taro.showToast({ title: '保存失败', icon: 'none' })
+                })
+              }
+            })
           }}>
             <Icon name='save' size={20} color='#fff' />
           </View>
@@ -173,7 +172,9 @@ export default function AlbumPage() {
           )}
         </View>
 
-        <Text className='photo-viewer-hint'>长按图片可保存</Text>
+        <View className='photo-viewer-footer'>
+          <Text className='photo-viewer-hint'>长按图片可保存</Text>
+        </View>
       </View>
     )
   }
@@ -252,8 +253,15 @@ export default function AlbumPage() {
     <View className='album-page'>
       <View className='album-header'>
         <Text className='album-title'>相册</Text>
-        <View className='album-add-btn' onClick={openAddAlbum}>
-          <Icon name='add' size={24} color='#fff' />
+        <View className='album-header-actions-top'>
+          <View className='album-pill album-pill-create' onClick={openAddAlbum}>
+            <Icon name='add' size={18} color='#c2410c' />
+            <Text className='album-pill-text'>新建相册</Text>
+          </View>
+          <View className='album-pill album-pill-upload' onClick={() => { if (albums.length > 0) { setUploadAlbum(albums[0].id); setShowUpload(true) } }}>
+            <Icon name='upload' size={18} color='#fff' />
+            <Text className='album-pill-text-upload'>上传</Text>
+          </View>
         </View>
       </View>
 
@@ -271,7 +279,7 @@ export default function AlbumPage() {
               <Icon name='album' size={48} color='#ccc' />
             </View>
             <Text>还没有相册</Text>
-            <Text className='album-empty-sub'>点击右上角创建</Text>
+            <Text className='album-empty-sub'>点击新建相册创建</Text>
           </View>
         ) : (
           albums.map(album => (
@@ -284,13 +292,13 @@ export default function AlbumPage() {
               </View>
               <View className='album-card-info'>
                 <Text className='album-card-name'>{album.name}</Text>
-                <Text className='album-card-count'>{album.photo_count || 0} 张</Text>
+                <Text className='album-card-count'>{album.photo_count || 0} 张照片</Text>
               </View>
               <View className='album-card-actions' onClick={(e: any) => e.stopPropagation()}>
-                <View className='album-action-btn' onClick={() => openEditAlbum(album)}>
+                <View className='album-action-btn album-action-edit' onClick={() => openEditAlbum(album)}>
                   <Icon name='edit' size={20} color='#f97316' />
                 </View>
-                <View className='album-action-btn danger' onClick={() => handleDeleteAlbum(album.id)}>
+                <View className='album-action-btn album-action-delete' onClick={() => handleDeleteAlbum(album.id)}>
                   <Icon name='delete' size={20} color='#ef4444' />
                 </View>
               </View>
@@ -299,11 +307,24 @@ export default function AlbumPage() {
         )}
       </ScrollView>
 
+      {showUpload && (
+        <View className='album-modal-overlay' onClick={() => setShowUpload(false)}>
+          <View className='album-confirm' onClick={(e: any) => e.stopPropagation()}>
+            <Text className='album-confirm-title'>上传照片</Text>
+            <Text className='album-confirm-text'>选择要上传的照片（最多9张）</Text>
+            <View className='album-confirm-actions'>
+              <View className='album-btn-cancel' onClick={() => setShowUpload(false)}><Text>取消</Text></View>
+              <View className='album-btn-save' onClick={handleUploadPhoto}><Text>选择照片</Text></View>
+            </View>
+          </View>
+        </View>
+      )}
+
       {showAlbumForm && (
         <View className='album-modal-overlay' onClick={() => setShowAlbumForm(false)}>
           <View className='album-modal' onClick={(e: any) => e.stopPropagation()}>
             <View className='album-modal-handle'></View>
-            <Text className='album-modal-title'>{editingAlbum ? '编辑相册' : '新增相册'}</Text>
+            <Text className='album-modal-title'>{editingAlbum ? '编辑相册' : '新建相册'}</Text>
             <View className='album-form'>
               <Text className='album-label'>名称</Text>
               <Input className='album-input' placeholder='相册名称' value={albumName} onInput={e => setAlbumName(e.detail.value)} />

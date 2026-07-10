@@ -3,7 +3,7 @@
   --color-primary-light: #fb923c;
   --color-primary-dark: #c2410c;
   --color-primary-bg: #fff5eb;
-  --color-primary-glow: rgba(251,146,60,0.3);
+  --color-primary-glow: rgba(251,146,60,0.25);
   --color-accent: #ec4899;
   --color-accent-light: #fdf2f8;
   --color-danger: #ef4444;
@@ -20,39 +20,33 @@
   --radius-lg: 24px;
   --radius-xl: 32px;
   --radius-round: 50%;
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 20px rgba(251,146,60,0.08);
-  --shadow-lg: 0 8px 32px rgba(251,146,60,0.12);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 24px rgba(251,146,60,0.08), 0 2px 8px rgba(0,0,0,0.02);
+  --shadow-lg: 0 8px 32px rgba(251,146,60,0.10), 0 2px 8px rgba(0,0,0,0.03);
   --shadow-float: 0 8px 24px rgba(251,146,60,0.25);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   font-size: 28px;
   color: var(--color-text);
   background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
 }
 
 view, text, input, textarea, button {
   box-sizing: border-box;
 }
 
-/* Safe area support */
 page {
   --safe-area-inset-top: env(safe-area-inset-top);
   --safe-area-inset-bottom: env(safe-area-inset-bottom);
 }
 
-/* Utility classes */
-.flex { display: flex; }
-.flex-col { display: flex; flex-direction: column; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-.gap-sm { gap: 12px; }
-.gap-md { gap: 20px; }
-.gap-lg { gap: 30px; }
-.text-center { text-align: center; }
-.flex-1 { flex: 1; min-width: 0; }
+/* Glass effect - WeChat MP compatible (high opacity, no blur fallback) */
+.glass {
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
 
-/* FAB - Floating Action Button (above tab bar) */
+/* FAB - Floating Action Button */
 .fab {
   position: fixed;
   bottom: calc(160px + env(safe-area-inset-bottom));
@@ -72,10 +66,18 @@ page {
   transform: scale(0.92);
 }
 
-/* Icon helper */
-.icon-inline {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-}
+/* Utility classes */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-sm { gap: 12px; }
+.gap-md { gap: 20px; }
+.gap-lg { gap: 30px; }
+.text-center { text-align: center; }
+.flex-1 { flex: 1; min-width: 0; }
+.relative { position: relative; }
+.overflow-hidden { overflow: hidden; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
