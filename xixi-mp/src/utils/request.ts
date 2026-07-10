@@ -1,6 +1,6 @@
 ﻿import Taro from '@tarojs/taro'
 
-const API_BASE = 'http://localhost:3000'
+const API_BASE = 'http://192.168.110.119:3000'
 
 interface RequestOptions {
   method?: string
@@ -58,4 +58,20 @@ export async function uploadFile(url: string, filePath: string, formData?: any, 
     if (e.message && e.message.includes('Upload failed')) throw e
     return res.data
   }
+}
+
+
+export async function uploadRawFile(url: string, filePath: string): Promise<any> {
+  const fs = Taro.getFileSystemManager()
+  let base64Data: string
+  try {
+    base64Data = fs.readFileSync(filePath, "base64")
+  } catch (e: any) {
+    throw new Error("读取文件失败")
+  }
+  const result = await request<{ avatar: string; user: any }>(url, {
+    method: "POST",
+    body: JSON.stringify({ image: base64Data })
+  })
+  return result
 }

@@ -86,7 +86,7 @@ export default function AlbumPage() {
       <View className='album-page'>
         <View className='album-photo-header'>
           <View className='album-back-btn' onClick={() => setActiveAlbum(null)}>
-            <Text className='album-back-icon'>←</Text>
+            <Text className='album-back-icon'>�?/Text>
           </View>
           <Text className='album-photo-title'>{album?.name}</Text>
           <View className='album-upload-btn' onClick={() => { setUploadAlbum(activeAlbum); setShowUpload(true) }}>
@@ -97,10 +97,10 @@ export default function AlbumPage() {
         <ScrollView className='album-photo-grid-scroll' scrollY>
           <View className='album-photo-grid'>
             {photos.length === 0 ? (
-              <View className='album-empty'><Text>还没有照片</Text></View>
+              <View className='album-empty'><Text>还没有照�?/Text></View>
             ) : (
               photos.map(photo => (
-                <View key={photo.id} className='album-photo-item' onLongPress={() => handleDeletePhoto(photo.id)}>
+                <View key={photo.id} className='album-photo-item' onClick={() => handleDeletePhoto(photo.id)}>
                   <Image src={photo.image_url} mode='aspectFill' className='album-photo-img' />
                 </View>
               ))
@@ -112,7 +112,7 @@ export default function AlbumPage() {
           <View className='album-modal-overlay' onClick={() => setShowUpload(false)}>
             <View className='album-confirm' onClick={(e: any) => e.stopPropagation()}>
               <Text className='album-confirm-title'>上传照片</Text>
-              <Text className='album-confirm-text'>选择要上传的照片（最多9张）</Text>
+              <Text className='album-confirm-text'>选择要上传的照片（最�?张）</Text>
               <View className='album-confirm-actions'>
                 <View className='album-btn-cancel' onClick={() => setShowUpload(false)}><Text>取消</Text></View>
                 <View className='album-btn-save' onClick={handleUploadPhoto}><Text>选择照片</Text></View>
@@ -143,9 +143,9 @@ export default function AlbumPage() {
           </View>
         ) : albums.length === 0 ? (
           <View className='album-empty'>
-            <Text className='empty-icon'>✨</Text>
-            <Text>还没有相册</Text>
-            <Text className='empty-sub'>点击右上角创建</Text>
+            <Text className='empty-icon'>�?/Text>
+            <Text>还没有相�?/Text>
+            <Text className='empty-sub'>点击右上角创�?/Text>
           </View>
         ) : (
           albums.map(album => (
@@ -158,14 +158,14 @@ export default function AlbumPage() {
               </View>
               <View className='album-card-info'>
                 <Text className='album-card-name'>{album.name}</Text>
-                <Text className='album-card-count'>{album.photo_count || 0} 张</Text>
+                <Text className='album-card-count'>{album.photo_count || 0} �?/Text>
               </View>
               <View className='album-card-actions' onClick={(e: any) => e.stopPropagation()}>
                 <View className='album-action-btn' onClick={() => openEditAlbum(album)}>
-                  <Text className='album-action-icon'>✎</Text>
+                  <Text className='album-action-icon'>�?/Text>
                 </View>
                 <View className='album-action-btn' onClick={() => handleDeleteAlbum(album.id)}>
-                  <Text className='album-action-icon danger'>✖</Text>
+                  <Text className='album-action-icon danger'>�?/Text>
                 </View>
               </View>
             </View>
@@ -182,7 +182,7 @@ export default function AlbumPage() {
               <Text className='album-label'>名称</Text>
               <Input className='album-input' placeholder='相册名称' value={albumName} onInput={e => setAlbumName(e.detail.value)} />
               <Text className='album-label'>描述</Text>
-              <Input className='album-input' placeholder='可选' value={albumDesc} onInput={e => setAlbumDesc(e.detail.value)} />
+              <Input className='album-input' placeholder='可�? value={albumDesc} onInput={e => setAlbumDesc(e.detail.value)} />
               <View className='album-form-actions'>
                 <View className='album-btn-cancel' onClick={() => setShowAlbumForm(false)}><Text>取消</Text></View>
                 <View className='album-btn-save' onClick={handleAlbumSubmit}><Text>保存</Text></View>

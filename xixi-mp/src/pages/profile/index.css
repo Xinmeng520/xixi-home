@@ -21,9 +21,9 @@
 .profile-edit-btn { width: 56px; height: 56px; border-radius: 50%; background: #fff5eb; display: flex; align-items: center; justify-content: center; }
 .profile-edit-icon { font-size: 24px; color: #f97316; }
 .profile-edit-form { display: flex; flex-direction: column; gap: 20px; }
-.profile-input { width: 100%; padding: 22px 26px; border-radius: 20px; border: 2px solid rgba(251,146,60,0.2); background: #fffaf5; font-size: 28px; color: #333; margin-bottom: 16px; }
+.profile-input { width: 100%; padding: 22px 26px; border-radius: 20px; border: 2px solid rgba(251,146,60,0.4); background: #fffaf5; font-size: 28px; color: #333; margin-bottom: 16px; }
 .profile-form-actions { display: flex; gap: 20px; }
-.profile-btn-cancel { flex: 1; padding: 22px; border-radius: 20px; border: 2px solid rgba(251,146,60,0.2); text-align: center; font-size: 26px; color: #f97316; }
+.profile-btn-cancel { flex: 1; padding: 22px; border-radius: 20px; border: 2px solid rgba(251,146,60,0.4); text-align: center; font-size: 26px; color: #f97316; }
 .profile-btn-save { flex: 1; padding: 22px; border-radius: 20px; background: linear-gradient(90deg, #fb923c, #f97316); text-align: center; font-size: 26px; color: #fff; font-weight: 500; }
 .profile-btn-save.full { width: 100%; margin-top: 8px; }
 .profile-btn-save.disabled { opacity: 0.5; }

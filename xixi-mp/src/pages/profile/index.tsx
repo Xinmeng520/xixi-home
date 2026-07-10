@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Image, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { request, uploadFile } from '../../utils/request'
+import { request, uploadFile, uploadRawFile } from '../../utils/request'
 import { User } from '../../utils/types'
 import './index.css'
 
@@ -53,8 +53,8 @@ export default function ProfilePage() {
     try {
       const res = await Taro.chooseMedia({ count: 1, mediaType: ['image'], sourceType: ['album', 'camera'] })
       const filePath = res.tempFiles[0].tempFilePath
-      const result = await uploadFile('/api/auth/avatar', filePath, undefined, 'avatar')
-      setUser(prev => prev ? { ...prev, avatar: result.url } : prev)
+      const result = await uploadRawFile('/api/auth/avatar-base64', filePath)
+      setUser(prev => prev ? { ...prev, avatar: result.avatar } : prev)
       Taro.showToast({ title: '上传成功', icon: 'success' })
     } catch (err: any) {
       if (err.errMsg?.indexOf('cancel') === -1) setError(err.message || '上传失败')
