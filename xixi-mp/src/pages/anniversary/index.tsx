@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react'
+﻿import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request } from '../../utils/request'
 import { Anniversary } from '../../utils/types'
+import Icon from '../../components/Icon'
 import './index.css'
 
 function formatDate(dateStr: string): string {
@@ -69,7 +70,7 @@ export default function AnniversaryPage() {
       <View className='anniv-header'>
         <Text className='anniv-title'>纪念日</Text>
         <View className='anniv-add-btn' onClick={openAdd}>
-          <Text className='anniv-add-icon'>+</Text>
+          <Icon name='add' size={24} color='#fff' />
         </View>
       </View>
 
@@ -83,7 +84,9 @@ export default function AnniversaryPage() {
           </View>
         ) : items.length === 0 ? (
           <View className='anniv-empty'>
-            <Text className='anniv-empty-icon'>🎂</Text>
+            <View className='anniv-empty-icon-wrap'>
+              <Icon name='calendar' size={48} color='#ccc' />
+            </View>
             <Text>还没有纪念日</Text>
             <Text className='anniv-empty-sub'>点击右上角添加</Text>
           </View>
@@ -103,10 +106,10 @@ export default function AnniversaryPage() {
               </View>
               <View className='anniv-card-actions'>
                 <View className='anniv-action-btn' onClick={() => openEdit(item)}>
-                  <Text className='anniv-action-icon'>✎</Text>
+                  <Icon name='edit' size={20} color='#f97316' />
                 </View>
-                <View className='anniv-action-btn' onClick={() => setDeleteConfirm(item.id)}>
-                  <Text className='anniv-action-icon danger'>✕</Text>
+                <View className='anniv-action-btn danger' onClick={() => setDeleteConfirm(item.id)}>
+                  <Icon name='delete' size={20} color='#ef4444' />
                 </View>
               </View>
             </View>

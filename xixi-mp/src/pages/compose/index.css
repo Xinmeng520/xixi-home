@@ -1,4 +1,4 @@
-.compose-page {
+﻿.compose-page {
   min-height: 100vh;
   background: var(--color-bg);
   padding-bottom: 200px;
@@ -96,8 +96,6 @@
   border-radius: 50%;
   background: rgba(0,0,0,0.5);
   display: flex; align-items: center; justify-content: center;
-  color: #fff;
-  font-size: 20px;
 }
 .compose-image-add {
   aspect-ratio: 1;
@@ -110,7 +108,6 @@
   gap: 8px;
   background: rgba(255,250,245,0.5);
 }
-.compose-image-add-icon { font-size: 36px; color: var(--color-text-light); }
 .compose-image-add-text { font-size: 20px; color: var(--color-text-light); }
 
 /* Toolbar */
@@ -141,6 +138,5 @@
 .compose-toolbar-btn.active {
   background: var(--color-primary-bg);
 }
-.compose-toolbar-icon { font-size: 26px; }
 .compose-toolbar-label { font-size: 22px; color: var(--color-text-secondary); }
 .compose-toolbar-btn.active .compose-toolbar-label { color: var(--color-primary); }

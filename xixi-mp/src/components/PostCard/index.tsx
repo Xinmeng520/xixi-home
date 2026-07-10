@@ -1,8 +1,9 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request, resolveImageUrl } from '../../utils/request'
 import { Post } from '../../utils/types'
+import Icon from '../../components/Icon'
 import './index.css'
 
 interface Props {
@@ -82,7 +83,12 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
 
   return (
     <View className='post-card'>
-      {post.is_pinned === 1 && <View className='post-pinned-badge'>置顶</View>}
+      {post.is_pinned === 1 && (
+        <View className='post-pinned-badge'>
+          <Icon name='pin' size={12} color='#fff' />
+          <Text className='post-pinned-text'>置顶</Text>
+        </View>
+      )}
 
       {/* Header */}
       <View className='post-header'>
@@ -99,19 +105,20 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
         {isAuthor && (
           <View className='post-menu'>
             <View className='post-menu-trigger' onClick={() => setShowMenu(!showMenu)}>
-              <View className='post-menu-dot'></View>
-              <View className='post-menu-dot'></View>
-              <View className='post-menu-dot'></View>
+              <Icon name='more' size={20} color='#999' />
             </View>
             {showMenu && (
               <View className='post-menu-dropdown'>
                 <View className='post-menu-item' onClick={() => { setShowMenu(false); Taro.navigateTo({ url: '/pages/edit-post/index?id=' + post.id }) }}>
+                  <Icon name='edit' size={16} color='#666' />
                   <Text>编辑</Text>
                 </View>
                 <View className='post-menu-item' onClick={togglePin}>
+                  <Icon name='pin' size={16} color='#666' />
                   <Text>{post.is_pinned === 1 ? '取消置顶' : '置顶'}</Text>
                 </View>
                 <View className='post-menu-item danger' onClick={handleDelete}>
+                  <Icon name='delete' size={16} color='#ef4444' />
                   <Text>删除</Text>
                 </View>
               </View>
@@ -139,11 +146,11 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
       {/* Actions */}
       <View className='post-actions'>
         <View className={'post-action ' + (liked ? 'liked' : '')} onClick={toggleLike}>
-          <Text className='post-action-icon'>{liked ? '❤️' : '🤍'}</Text>
+          <Icon name={liked ? 'heart-filled' : 'heart'} size={22} color={liked ? '#ef4444' : '#666'} />
           <Text className='post-action-count'>{likeCount}</Text>
         </View>
         <View className='post-action' onClick={toggleComments}>
-          <Text className='post-action-icon'>💬</Text>
+          <Icon name='comment' size={22} color='#666' />
           <Text className='post-action-count'>{post.comment_count}</Text>
         </View>
       </View>
@@ -163,7 +170,7 @@ export default function PostCard({ post, currentUser, onDelete, onTogglePin }: P
           <View className='post-comment-input-row'>
             <Input className='post-comment-input' placeholder='写下你的评论...' value={commentText} onInput={e => setCommentText(e.detail.value)} confirm-type='send' onConfirm={submitComment} />
             <View className='post-comment-send' onClick={submitComment}>
-              <Text>发送</Text>
+              <Icon name='send' size={18} color='#fff' />
             </View>
           </View>
         </View>

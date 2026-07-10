@@ -1,4 +1,4 @@
-.login-page {
+﻿.login-page {
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -32,6 +32,9 @@
   max-width: 560px;
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .login-logo {
   width: 110px; height: 110px;
@@ -40,11 +43,6 @@
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 10px 40px var(--color-primary-glow);
   margin: 0 auto 28px;
-}
-.login-logo-text {
-  font-size: 48px;
-  color: #fff;
-  font-weight: 700;
 }
 .login-title {
   font-size: 36px;

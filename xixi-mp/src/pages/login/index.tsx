@@ -1,7 +1,8 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { View, Text, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request } from '../../utils/request'
+import Icon from '../../components/Icon'
 import './index.css'
 
 export default function LoginPage() {
@@ -31,7 +32,7 @@ export default function LoginPage() {
 
       <View className='login-content'>
         <View className='login-logo'>
-          <Text className='login-logo-text'>熙</Text>
+          <Icon name='logo' size={50} color='#fff' />
         </View>
         <Text className='login-title'>熙熙小窝</Text>
         <Text className='login-subtitle'>登录你的小世界</Text>

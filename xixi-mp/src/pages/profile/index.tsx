@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react'
+﻿import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request, uploadRawFile, resolveImageUrl } from '../../utils/request'
 import { User } from '../../utils/types'
+import Icon from '../../components/Icon'
 import './index.css'
 
 export default function ProfilePage() {
@@ -94,7 +95,7 @@ export default function ProfilePage() {
             }
           </View>
           <View className='profile-avatar-badge'>
-            <Text>📷</Text>
+            <Icon name='camera' size={18} color='#fff' />
           </View>
         </View>
         <Text className='profile-name'>{user?.nickname}</Text>
@@ -110,7 +111,8 @@ export default function ProfilePage() {
             <View className='profile-field-row'>
               <Text className='profile-field-value'>{user?.nickname}</Text>
               <View className='profile-edit-btn' onClick={handleEdit}>
-                <Text>编辑</Text>
+                <Icon name='edit' size={16} color='#f97316' />
+                <Text className='profile-edit-btn-text'>编辑</Text>
               </View>
             </View>
           ) : (
@@ -142,7 +144,8 @@ export default function ProfilePage() {
       {/* Logout */}
       <View className='profile-section'>
         <View className='profile-logout-btn' onClick={handleLogout}>
-          <Text>退出登录</Text>
+          <Icon name='logout' size={20} color='#ef4444' />
+          <Text className='profile-logout-text'>退出登录</Text>
         </View>
       </View>
     </View>

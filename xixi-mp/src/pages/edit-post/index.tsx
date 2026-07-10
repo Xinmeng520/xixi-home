@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { View, Text, Input, Textarea, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { request, uploadFile } from '../../utils/request'
+import Icon from '../../components/Icon'
 import './index.css'
 
 export default function EditPostPage() {
@@ -45,7 +46,6 @@ export default function EditPostPage() {
         method: 'PUT',
         body: JSON.stringify({ title: title.trim(), content, is_pinned: isPinned ? 1 : 0 })
       })
-      // Upload new images
       for (const f of newFiles) {
         await uploadFile(`/api/posts/${id}/images`, f, null, 'images')
       }
@@ -69,21 +69,21 @@ export default function EditPostPage() {
         {existingImages.length > 0 && (
           <View className='compose-images'>
             {existingImages.map((url, i) => (
-              <View key={'old-'+i} className='compose-img-wrap'><Image src={url} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => setExistingImages(prev => prev.filter((_, idx) => idx !== i))}>✖</View></View>
+              <View key={'old-'+i} className='compose-img-wrap'><Image src={url} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => setExistingImages(prev => prev.filter((_, idx) => idx !== i))}><Icon name='close' size={16} color='#fff' /></View></View>
             ))}
           </View>
         )}
         {newFiles.length > 0 && (
           <View className='compose-images'>
             {newFiles.map((f, i) => (
-              <View key={'new-'+i} className='compose-img-wrap'><Image src={f} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => setNewFiles(prev => prev.filter((_, idx) => idx !== i))}>✖</View></View>
+              <View key={'new-'+i} className='compose-img-wrap'><Image src={f} mode='aspectFill' className='compose-img' /><View className='compose-img-remove' onClick={() => setNewFiles(prev => prev.filter((_, idx) => idx !== i))}><Icon name='close' size={16} color='#fff' /></View></View>
             ))}
           </View>
         )}
       </View>
       <View className='compose-toolbar'>
-        <View className='toolbar-btn' onClick={chooseImages}><Text>🖼</Text><Text className='toolbar-label'>图片</Text></View>
-        <View className={'toolbar-btn ' + (isPinned ? 'active' : '')} onClick={() => setIsPinned(!isPinned)}><Text>📌</Text><Text className='toolbar-label'>{isPinned ? '已置顶' : '置顶'}</Text></View>
+        <View className='toolbar-btn' onClick={chooseImages}><Icon name='image' size={22} color='#f97316' /><Text className='toolbar-label'>图片</Text></View>
+        <View className={'toolbar-btn ' + (isPinned ? 'active' : '')} onClick={() => setIsPinned(!isPinned)}><Icon name='pin' size={22} color={isPinned ? '#f97316' : '#999'} /><Text className='toolbar-label'>{isPinned ? '已置顶' : '置顶'}</Text></View>
       </View>
     </View>
   )

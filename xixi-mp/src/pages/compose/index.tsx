@@ -1,7 +1,8 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { View, Text, Input, Textarea, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request, uploadFile } from '../../utils/request'
+import Icon from '../../components/Icon'
 import './index.css'
 
 export default function ComposePage() {
@@ -82,13 +83,13 @@ export default function ComposePage() {
             <View key={i} className='compose-image-item'>
               <Image src={f} mode='aspectFill' className='compose-image' />
               <View className='compose-image-remove' onClick={() => removeFile(i)}>
-                <Text>✕</Text>
+                <Icon name='close' size={16} color='#fff' />
               </View>
             </View>
           ))}
           {files.length < 9 && (
             <View className='compose-image-add' onClick={chooseImages}>
-              <Text className='compose-image-add-icon'>+</Text>
+              <Icon name='add' size={32} color='#ccc' />
               <Text className='compose-image-add-text'>图片</Text>
             </View>
           )}
@@ -98,11 +99,11 @@ export default function ComposePage() {
       {/* Toolbar */}
       <View className='compose-toolbar'>
         <View className='compose-toolbar-btn' onClick={chooseImages}>
-          <Text className='compose-toolbar-icon'>🖼</Text>
+          <Icon name='image' size={22} color='#f97316' />
           <Text className='compose-toolbar-label'>图片</Text>
         </View>
         <View className={'compose-toolbar-btn ' + (isPinned ? 'active' : '')} onClick={() => setIsPinned(!isPinned)}>
-          <Text className='compose-toolbar-icon'>📌</Text>
+          <Icon name='pin' size={22} color={isPinned ? '#f97316' : '#999'} />
           <Text className='compose-toolbar-label'>{isPinned ? '已置顶' : '置顶'}</Text>
         </View>
       </View>

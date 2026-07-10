@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react'
+﻿import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request, uploadFile, resolveImageUrl } from '../../utils/request'
 import { Album, Photo } from '../../utils/types'
+import Icon from '../../components/Icon'
 import './index.css'
 
 export default function AlbumPage() {
@@ -102,7 +103,6 @@ export default function AlbumPage() {
       itemList: ['保存到相册', '删除'],
       success: (res) => {
         if (res.tapIndex === 0) {
-          // Save photo - find the photo and download
           const photo = photos.find(p => p.id === photoId)
           if (photo) {
             Taro.downloadFile({
@@ -123,20 +123,22 @@ export default function AlbumPage() {
     })
   }
 
-  // Photo viewer modal
+  // Photo viewer
   if (viewerOpen) {
+    const currentPhoto = viewerPhotos[viewerIndex]
+    const hasPrev = viewerIndex > 0
+    const hasNext = viewerIndex < viewerPhotos.length - 1
     return (
       <View className='photo-viewer'>
         <View className='photo-viewer-header'>
           <View className='photo-viewer-back' onClick={() => setViewerOpen(false)}>
-            <Text>✕</Text>
+            <Icon name='back' size={24} color='#fff' />
           </View>
-          <Text className='photo-viewer-counter'>{viewerIndex + 1} / {viewerPhotos.length}</Text>
+          <Text className='photo-viewer-counter'>{viewerIndex + 1}/{viewerPhotos.length}</Text>
           <View className='photo-viewer-save' onClick={() => {
-            const photo = viewerPhotos[viewerIndex]
-            if (photo) {
+            if (currentPhoto) {
               Taro.downloadFile({
-                url: resolveImageUrl(photo.image_url),
+                url: resolveImageUrl(currentPhoto.image_url),
                 success: (downloadRes) => {
                   Taro.saveImageToPhotosAlbum({
                     filePath: downloadRes.tempFilePath,
@@ -147,37 +149,31 @@ export default function AlbumPage() {
               })
             }
           }}>
-            <Text>保存</Text>
+            <Icon name='save' size={20} color='#fff' />
           </View>
         </View>
+
         <View className='photo-viewer-swiper'>
-          <View className='photo-viewer-track' style={{ transform: 'translateX(-' + (viewerIndex * 100) + '%)' }}>
+          <View className='photo-viewer-track' style={{ transform: 'translateX(-' + viewerIndex * 100 + '%)' }}>
             {viewerPhotos.map((photo, i) => (
-              <View key={photo.id} className='photo-viewer-slide'
-                onClick={() => setViewerOpen(false)}
-                onTouchStart={() => {}}
-              >
-                <Image
-                  src={resolveImageUrl(photo.image_url)}
-                  mode='aspectFit'
-                  className='photo-viewer-image'
-                />
+              <View key={photo.id} className='photo-viewer-slide'>
+                <Image src={resolveImageUrl(photo.image_url)} mode='aspectFit' className='photo-viewer-image' />
               </View>
             ))}
           </View>
+          {hasPrev && (
+            <View className='photo-viewer-nav photo-viewer-nav-prev' onClick={() => setViewerIndex(viewerIndex - 1)}>
+              <Icon name='chevron-left' size={28} color='#fff' />
+            </View>
+          )}
+          {hasNext && (
+            <View className='photo-viewer-nav photo-viewer-nav-next' onClick={() => setViewerIndex(viewerIndex + 1)}>
+              <Icon name='chevron-right' size={28} color='#fff' />
+            </View>
+          )}
         </View>
-        {/* Navigation arrows */}
-        {viewerIndex > 0 && (
-          <View className='photo-viewer-nav photo-viewer-nav-prev' onClick={() => setViewerIndex(viewerIndex - 1)}>
-            <Text>‹</Text>
-          </View>
-        )}
-        {viewerIndex < viewerPhotos.length - 1 && (
-          <View className='photo-viewer-nav photo-viewer-nav-next' onClick={() => setViewerIndex(viewerIndex + 1)}>
-            <Text>›</Text>
-          </View>
-        )}
-        <View className='photo-viewer-hint'>左右滑动切换 · 单击关闭 · 长按保存</View>
+
+        <Text className='photo-viewer-hint'>长按图片可保存</Text>
       </View>
     )
   }
@@ -189,24 +185,25 @@ export default function AlbumPage() {
       <View className='album-page'>
         <View className='album-photo-header'>
           <View className='album-back-btn' onClick={() => { setActiveAlbum(null); setDeleteMode(false) }}>
-            <Text className='album-back-icon'>←</Text>
+            <Icon name='back' size={24} color='#f97316' />
           </View>
           <Text className='album-photo-title'>{album?.name}</Text>
           <View className='album-header-actions'>
-            <View className={'album-header-btn ' + (deleteMode ? 'active' : '')} onClick={() => setDeleteMode(!deleteMode)}>
-              <Text>{deleteMode ? '完成' : '管理'}</Text>
-            </View>
             <View className='album-header-btn' onClick={() => { setUploadAlbum(activeAlbum); setShowUpload(true) }}>
-              <Text>+</Text>
+              <Icon name='upload' size={18} color='#f97316' />
+              <Text className='album-header-btn-text'>上传</Text>
+            </View>
+            <View className={'album-header-btn ' + (deleteMode ? 'active' : '')} onClick={() => setDeleteMode(!deleteMode)}>
+              <Icon name='delete' size={18} color={deleteMode ? '#fff' : '#f97316'} />
+              <Text className='album-header-btn-text'>删除</Text>
             </View>
           </View>
         </View>
 
-        {error && <View className='album-error'><Text>{error}</Text></View>}
-
         {deleteMode && (
           <View className='album-delete-hint'>
-            <Text>点击照片删除 · 删除后不可恢复</Text>
+            <Icon name='delete' size={16} color='#ef4444' />
+            <Text className='album-delete-hint-text'> 点击照片删除</Text>
           </View>
         )}
 
@@ -225,7 +222,7 @@ export default function AlbumPage() {
                   <Image src={resolveImageUrl(photo.image_url)} mode='aspectFill' className='album-photo-img' />
                   {deleteMode && (
                     <View className='album-photo-delete-mark'>
-                      <Text>✕</Text>
+                      <Icon name='close' size={14} color='#fff' />
                     </View>
                   )}
                 </View>
@@ -256,7 +253,7 @@ export default function AlbumPage() {
       <View className='album-header'>
         <Text className='album-title'>相册</Text>
         <View className='album-add-btn' onClick={openAddAlbum}>
-          <Text className='album-add-icon'>+</Text>
+          <Icon name='add' size={24} color='#fff' />
         </View>
       </View>
 
@@ -270,7 +267,9 @@ export default function AlbumPage() {
           </View>
         ) : albums.length === 0 ? (
           <View className='album-empty'>
-            <Text className='album-empty-icon'>📷</Text>
+            <View className='album-empty-icon-wrap'>
+              <Icon name='album' size={48} color='#ccc' />
+            </View>
             <Text>还没有相册</Text>
             <Text className='album-empty-sub'>点击右上角创建</Text>
           </View>
@@ -280,7 +279,7 @@ export default function AlbumPage() {
               <View className='album-cover'>
                 {album.cover_url
                   ? <Image src={resolveImageUrl(album.cover_url)} mode='aspectFill' className='album-cover-img' />
-                  : <View className='album-cover-placeholder'><Text>🖼</Text></View>
+                  : <View className='album-cover-placeholder'><Icon name='image' size={32} color='#ccc' /></View>
                 }
               </View>
               <View className='album-card-info'>
@@ -289,10 +288,10 @@ export default function AlbumPage() {
               </View>
               <View className='album-card-actions' onClick={(e: any) => e.stopPropagation()}>
                 <View className='album-action-btn' onClick={() => openEditAlbum(album)}>
-                  <Text className='album-action-icon'>✎</Text>
+                  <Icon name='edit' size={20} color='#f97316' />
                 </View>
-                <View className='album-action-btn' onClick={() => handleDeleteAlbum(album.id)}>
-                  <Text className='album-action-icon danger'>✕</Text>
+                <View className='album-action-btn danger' onClick={() => handleDeleteAlbum(album.id)}>
+                  <Icon name='delete' size={20} color='#ef4444' />
                 </View>
               </View>
             </View>

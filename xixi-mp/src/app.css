@@ -1,4 +1,4 @@
-page {
+﻿page {
   --color-primary: #f97316;
   --color-primary-light: #fb923c;
   --color-primary-dark: #c2410c;
@@ -65,8 +65,11 @@ view, text, input, textarea, button {
 .fab:active {
   transform: scale(0.92);
 }
-.fab-icon {
-  font-size: 40px;
-  color: #fff;
-  font-weight: 300;
+
+/* Icon helper */
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 }

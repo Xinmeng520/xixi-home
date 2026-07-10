@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback } from 'react'
+﻿import { useEffect, useState, useCallback } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { request, resolveImageUrl } from '../../utils/request'
 import { HomeData, Post } from '../../utils/types'
 import PostCard from '../../components/PostCard'
+import Icon from '../../components/Icon'
 import './index.css'
 
 export default function HomePage() {
@@ -41,7 +42,7 @@ export default function HomePage() {
         <View className='home-hero-decoration'></View>
         <View className='home-header-row'>
           <View className='home-logo'>
-            <Text className='home-logo-icon'>熙</Text>
+            <Icon name='logo' size={36} color='#fff' />
           </View>
           <View className='home-header-text'>
             <Text className='home-title'>熙熙小窝</Text>
@@ -88,7 +89,9 @@ export default function HomePage() {
           </View>
         ) : posts.length === 0 ? (
           <View className='home-empty'>
-            <Text className='home-empty-icon'>📝</Text>
+            <View className='home-empty-icon-wrap'>
+              <Icon name='image' size={48} color='#ccc' />
+            </View>
             <Text className='home-empty-title'>还没有动态</Text>
             <Text className='home-empty-sub'>点击右下角按钮，记录美好时光</Text>
           </View>
@@ -99,7 +102,7 @@ export default function HomePage() {
 
       {/* FAB - New Post Button */}
       <View className='fab' onClick={() => Taro.navigateTo({ url: '/pages/compose/index' })}>
-        <Text className='fab-icon'>+</Text>
+        <Icon name='add' size={32} color='#fff' />
       </View>
     </View>
   )

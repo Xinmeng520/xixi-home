@@ -1,4 +1,4 @@
-.home-page {
+﻿.home-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #fffaf5 0%, #fff5eb 15%, #fffaf5 30%, #fffaf5 100%);
   padding-bottom: 200px;
@@ -37,11 +37,6 @@
   justify-content: center;
   box-shadow: 0 6px 20px var(--color-primary-glow);
 }
-.home-logo-icon {
-  font-size: 32px;
-  color: #fff;
-  font-weight: 700;
-}
 .home-header-text { display: flex; flex-direction: column; gap: 4px; }
 .home-title {
   font-size: 32px;
@@ -54,7 +49,7 @@
   color: var(--color-text-muted);
   letter-spacing: 4px;
   font-weight: 300;
- text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 /* Stats */
@@ -176,6 +171,8 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
-.home-empty-icon { font-size: 60px; display: block; margin-bottom: 16px; }
+.home-empty-icon-wrap {
+  margin-bottom: 16px;
+}
 .home-empty-title { font-size: 28px; color: var(--color-text-secondary); margin-bottom: 8px; }
 .home-empty-sub { font-size: 22px; color: var(--color-text-light); }
