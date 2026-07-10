@@ -6,6 +6,8 @@
   align-items: center;
   justify-content: center;
   padding: 60px;
+  padding-top: calc(60px + env(safe-area-inset-top));
+  padding-bottom: calc(60px + env(safe-area-inset-bottom));
   background: linear-gradient(160deg, #fffaf5 0%, #fff5eb 40%, #ffe4e6 100%);
   position: relative;
   overflow: hidden;

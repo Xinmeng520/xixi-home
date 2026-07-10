@@ -34,6 +34,12 @@ view, text, input, textarea, button {
   box-sizing: border-box;
 }
 
+/* Safe area support */
+page {
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+}
+
 /* Utility classes */
 .flex { display: flex; }
 .flex-col { display: flex; flex-direction: column; }
@@ -46,10 +52,10 @@ view, text, input, textarea, button {
 .text-center { text-align: center; }
 .flex-1 { flex: 1; min-width: 0; }
 
-/* FAB - Floating Action Button */
+/* FAB - Floating Action Button (above tab bar) */
 .fab {
   position: fixed;
-  bottom: 160px;
+  bottom: calc(160px + env(safe-area-inset-bottom));
   right: 40px;
   width: 96px;
   height: 96px;

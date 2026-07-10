@@ -10,6 +10,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 50px 36px 20px;
+  padding-top: calc(50px + env(safe-area-inset-top));
 }
 .anniv-title {
   font-size: 34px;
@@ -100,6 +101,7 @@
   background: #fff;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   padding: 24px 36px 50px;
+  padding-bottom: calc(50px + env(safe-area-inset-bottom));
 }
 .anniv-modal-handle {
   width: 60px; height: 6px;

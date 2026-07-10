@@ -21,10 +21,10 @@
     backgroundColor: '#ffffff',
     borderStyle: 'white',
     list: [
-      { pagePath: 'pages/home/index', text: '首页' },
-      { pagePath: 'pages/album/index', text: '相册' },
-      { pagePath: 'pages/anniversary/index', text: '纪念日' },
-      { pagePath: 'pages/profile/index', text: '我的' }
+      { pagePath: 'pages/home/index', text: '首页', iconPath: 'images/tab_home.png', selectedIconPath: 'images/tab_home_active.png' },
+      { pagePath: 'pages/album/index', text: '相册', iconPath: 'images/tab_album.png', selectedIconPath: 'images/tab_album_active.png' },
+      { pagePath: 'pages/anniversary/index', text: '纪念日', iconPath: 'images/tab_anniversary.png', selectedIconPath: 'images/tab_anniversary_active.png' },
+      { pagePath: 'pages/profile/index', text: '我的', iconPath: 'images/tab_profile.png', selectedIconPath: 'images/tab_profile_active.png' }
     ]
   },
   sitemapLocation: 'sitemap.json',

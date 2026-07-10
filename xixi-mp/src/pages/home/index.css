@@ -1,13 +1,14 @@
 ﻿.home-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #fffaf5 0%, #fff5eb 15%, #fffaf5 30%, #fffaf5 100%);
-  padding-bottom: 200px;
+  padding-bottom: calc(120px + env(safe-area-inset-bottom));
 }
 
 /* Hero Section */
 .home-hero {
   position: relative;
   padding: 70px 36px 40px;
+  padding-top: calc(70px + env(safe-area-inset-top));
   overflow: hidden;
 }
 .home-hero-decoration {
@@ -171,8 +172,6 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
-.home-empty-icon-wrap {
-  margin-bottom: 16px;
-}
+.home-empty-icon-wrap { margin-bottom: 16px; }
 .home-empty-title { font-size: 28px; color: var(--color-text-secondary); margin-bottom: 8px; }
 .home-empty-sub { font-size: 22px; color: var(--color-text-light); }
